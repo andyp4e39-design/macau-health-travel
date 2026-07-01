@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>澳康遊 (Macau Healer Walk) - SPA 演示原型</title>
+    <style>
+        /* ==========================================================================
+           【1. 全域視覺變數與外殼設定】
+           ========================================================================== */
+        :root {
+            --bg-gradient: linear-gradient(135deg, #f4f7f4 0%, #e6ebe6 100%);
+            --sage-green: #4a7c59;   /* 核心草本綠 */
+            --gold-accent: #d4a373;  /* 暖茶金 */
+            --text-dark: #2c3531;    /* 深碳黑 */
+            --card-white: rgba(255, 255, 255, 0.88);
+            --success-color: #2f855a;
+        }
+
+        body {
+            margin: 0; padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #191f1c; /* 暗色背景凸顯手機模擬器 */
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh; overflow: hidden;
+        }
+
+        /* 模擬實體手機畫布（Canvas） */
+        .phone-canvas {
+            width: 390px;
+            height: 844px; /* iPhone 13/14 標準比例 */
+            background: var(--bg-gradient);
+            border-radius: 42px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.45);
+            overflow: hidden;
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        /* 背景流體光暈（模擬中醫氣血運行） */
+        .bg-glow {
+            position: absolute; width: 320px; height: 320px;
+            background: rgba(74, 124, 89, 0.18); filter: blur(75px);
+            border-radius: 50%; top: 15%; left: 5%; z-index: 1;
+            animation: floatGlow 7s ease-in-out infinite alternate;
+        }
+        @keyframes floatGlow {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(25px, 20px) scale(1.15); }
+        }
+
+        /* ==========================================================================
+           【2. SPA 核心：圖層基礎配置與轉場動畫 CSS】
+           技術組注意：所有畫面都疊在同一個地方，透過 transition 達成流暢切換
+           ========================================================================== */
+        .screen {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            padding: 55px 26px 35px 26px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            z-index: 5;
+            /* 預設的轉場物理效果：0.6秒、自訂貝茲曲線（帶有一點優雅的減速彈性） */
+            transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1), 
+                        transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* 【轉場狀態 A】歡迎封面離場：往上飄移並變透明 */
+        .cover-exit-style {
+            opacity: 0;
+            transform: translateY(-40px);
+            pointer-events: none; /* 轉場時鎖定點擊，防止重複觸發 */
+        }
+
+        /* 【轉場狀態 B】舌診畫面登場前：隱藏在下方 40px 處靜候 */
+        .tongue-init-style {
+            opacity: 0;
+            transform: translateY(40px);
+            pointer-events: none;
+        }
+
+        /* 【轉場狀態 C】舌診畫面正式登場：回到原位並顯現 */
+        .tongue-active-style {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        /* ==========================================================================
+           【3. 畫面一：歡迎封面 (Cover) 專屬樣式】
+           ========================================================================== */
+        .top-content { z-index: 2; text-align: center; margin-top: 25px; width: 100%; }
+        
+        .app-logo {
+            width: 95px; height: 95px; background: var(--sage-green); border-radius: 26px;
+            margin: 0 auto 26px auto; display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 12px 24px rgba(74, 124, 89, 0.25);
+        }
+        .app-logo::after { content: '☯'; font-size: 46px; color: #faf6f0; }
+
+        .app-title-cn { font-size: 38px; font-weight: 800; color: var(--text-dark); letter-spacing: 7px; margin: 0; }
+        .app-title-en { font-size: 13px; font-weight: 600; color: #6e7a75; letter-spacing: 2.5px; text-transform: uppercase; margin: 6px 0 0 0; }
+        
+        .app-slogan { font-size: 14.5px; color: #4a5450; margin-top: 24px; letter-spacing: 1.5px; line-height: 1.6; }
+
+        /* 計劃書四大技術亮點標籤 */
+        .badge-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr);
+            gap: 10px; margin: 35px auto 0 auto; max-width: 280px;
+        }
+        .concept-badge {
+            background: var(--card-white); border: 1px solid rgba(74, 124, 89, 0.2);
+            padding: 8px 10px; border-radius: 14px; font-size: 12px;
+            color: var(--sage-green); font-weight: 600; text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02); backdrop-filter: blur(5px);
+        }
+
+        .btn-enter {
+            width: 100%; background: var(--sage-green); color: #ffffff; border: none; padding: 16px;
+            border-radius: 35px; font-size: 16px; font-weight: 700; letter-spacing: 2px; cursor: pointer;
+            box-shadow: 0 10px 25px rgba(74, 124, 89, 0.3); transition: all 0.3s ease;
+            animation: pulseButton 2s infinite;
+        }
+        .btn-enter:hover { background: #3a6246; }
+        @keyframes pulseButton {
+            0% { box-shadow: 0 0 0 0 rgba(74, 124, 89, 0.5); }
+            70% { box-shadow: 0 0 0 14px rgba(74, 124, 89, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(74, 124, 89, 0); }
+        }
+
+        .footer-info { font-size: 11px; color: #9ba6a1; letter-spacing: 1px; margin-top: 22px; }
+
+        /* ==========================================================================
+           【4. 畫面二：AI 舌診數據採集 專屬樣式】
+           ========================================================================== */
+        .tongue-header { text-align: center; }
+        .tongue-header h2 { margin: 0; font-size: 23px; color: var(--sage-green); font-weight: 700; }
+        .tongue-header p { margin: 6px 0 0 0; font-size: 12.5px; color: #626d68; line-height: 1.4; }
+
+        /* 標準化相機框 */
+        .camera-container {
+            width: 100%; height: 350px; background: #232a27; border-radius: 28px;
+            position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center;
+            box-shadow: inset 0 4px 20px rgba(0,0,0,0.5); margin: 15px 0; border: 2px solid rgba(255,255,255,0.1);
+        }
+
+        /* 生理結構對齊引導虛線框 */
+        .tongue-alignment-frame {
+            position: absolute; width: 150px; height: 200px;
+            border: 2.5px dashed var(--gold-accent); border-radius: 50% 50% 42% 42%;
+            opacity: 0.85; z-index: 3; box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.45); pointer-events: none;
+        }
+        .tongue-alignment-frame::after {
+            content: '請將「舌體」對齊此虛線框'; position: absolute; bottom: -32px; left: 50%;
+            transform: translateX(-50%); color: var(--gold-accent); font-size: 11px; font-weight: 600;
+            white-space: nowrap; letter-spacing: 1px; background: rgba(0,0,0,0.6); padding: 2px 8px; border-radius: 4px;
+        }
+
+        #camera-preview { width: 100%; height: 100%; object-fit: cover; display: none; z-index: 2; }
+        .camera-placeholder { color: #a3b0aa; text-align: center; font-size: 13.5px; z-index: 1; padding: 25px; line-height: 1.6; }
+
+        /* 即時前端環境校正指示燈面板 */
+        .detector-panel {
+            background: var(--card-white); border-radius: 18px; padding: 14px 10px;
+            display: flex; justify-content: space-around; border: 1px solid rgba(74, 124, 89, 0.15);
+        }
+        .detector-item { text-align: center; font-size: 11.5px; color: #3a4440; font-weight: 500; }
+        .status-dot { width: 11px; height: 11px; border-radius: 50%; margin: 0 auto 6px auto; background: #cbd5e0; transition: all 0.3s ease; }
+        .status-ok { background: var(--success-color); box-shadow: 0 0 10px rgba(47, 133, 90, 0.8); }
+
+        /* 操作按鈕與合規防線 */
+        .action-container { width: 100%; }
+        .btn-capture {
+            width: 100%; background: #2b6cb0; color: white; border: none; padding: 15px;
+            border-radius: 28px; font-size: 15px; font-weight: 700; cursor: pointer;
+            margin-bottom: 12px; box-shadow: 0 6px 16px rgba(43, 108, 176, 0.25);
+        }
+        .btn-api-send {
+            width: 100%; background: var(--sage-green); color: white; border: none; padding: 15px;
+            border-radius: 28px; font-size: 15px; font-weight: 700; cursor: pointer;
+            box-shadow: 0 6px 16px rgba(74, 124, 89, 0.25);
+        }
+        .btn-api-send:disabled { background: #bdc7c2; color: #ffffff; cursor: not-allowed; box-shadow: none; }
+        #hidden-file-input { display: none; }
+        
+        .legal-disclaimer {
+            font-size: 10px; color: #8a9490; text-align: justify; margin-top: 14px;
+            line-height: 1.4; border-top: 1px dashed rgba(0,0,0,0.1); padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="phone-canvas">
+    <div class="bg-glow"></div>
+
+    <div id="screen-cover" class="screen">
+        <div class="top-content">
+            <div class="app-logo"></div>
+            <h1 class="app-title-cn">澳康遊</h1>
+            <div class="app-title-en">Macau Healer Walk</div>
+            
+            <div class="app-slogan">
+                <strong>AI 舌診情志雙辨證</strong><br>
+                探索民生舊區 · 享受主題養生漫步
+            </div>
+            
+            <div class="badge-grid">
+                <div class="concept-badge">🧬 客觀舌象量化</div>
+                <div class="concept-badge">📊 七情內傷測評</div>
+                <div class="concept-badge">🗺️ 13主題Citywalk</div>
+                <div class="concept-badge">🏪 舊區商戶導流</div>
+            </div>
+        </div>
+
+        <div class="bottom-content" style="width:100%; text-align:center;">
+            <button class="btn-enter" onclick="startAppJourney()">開啟身心調養之旅</button>
+            <div class="footer-info">第六屆澳門聯校科學展覽參賽作品</div>
+        </div>
+    </div>
+
+    <div id="screen-tongue" class="screen tongue-init-style">
+        <div class="tongue-header">
+            <h2>AI 數據標準化採集</h2>
+            <p>第一階段：客觀舌象特徵量化（對應外感六淫體質）</p>
+        </div>
+
+        <div class="camera-container">
+            <div class="tongue-alignment-frame"></div>
+            <img id="camera-preview" alt="使用者採集舌象">
+            <div class="camera-placeholder" id="placeholder-text">
+                📸 <strong>展覽現場演示提示</strong>：<br>
+                點擊下方按鈕上傳或現拍一張清晰、無濾鏡的舌象照片。
+            </div>
+        </div>
+
+        <div class="detector-panel">
+            <div class="detector-item"><div class="status-dot" id="dot-light"></div><span id="txt-light">光源檢測</span></div>
+            <div class="detector-item"><div class="status-dot" id="dot-shadow"></div><span id="txt-shadow">陰影警示</span></div>
+            <div class="detector-item"><div class="status-dot" id="dot-posture"></div><span id="txt-posture">姿態校正</span></div>
+        </div>
+
+        <div class="action-container">
+            <input type="file" id="hidden-file-input" accept="image/*" onchange="processStandardizedPhoto(event)">
+            <button class="btn-capture" onclick="openNativeCamera()">📷 啟動模擬拍照 / 上傳舌象</button>
+            <button class="btn-api-send" id="btn-submit-dify" disabled onclick="dispatchDataToDifyWorkflow()">🧬 傳送 AI 多模態辨證</button>
+            
+            <div class="legal-disclaimer">
+                * <strong>風險聲明</strong>：本系統數據與辨證報告僅作中醫科普與文旅養生調理建議參考，不具備醫療診斷效力，無法取代執業中醫師面診與臨床診斷。
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    /**
+     * 邏輯 1：SPA 絲滑轉場核心控制
+     * 老師提示：此函數精準控制 CSS 的 class 動態切換，達成無縫轉場
+     */
+    function startAppJourney() {
+        const coverScreen = document.getElementById('screen-cover');
+        const tongueScreen = document.getElementById('screen-tongue');
+        const enterBtn = document.querySelector('.btn-enter');
+
+        // Step 1: 讓進入按鈕產生輕微被按下的縮放打擊感
+        enterBtn.style.transform = 'scale(0.96)';
+
+        // Step 2: 延遲 120 毫秒（等待按鈕動效完結），正式啟動大轉場
+        setTimeout(() => {
+            // 讓【歡迎封面】往上滑動並淡出
+            coverScreen.classList.add('cover-exit-style');
+
+            // 讓【舌診畫面】移除初始隱藏狀態，切換為「活躍登場狀態」
+            tongueScreen.classList.remove('tongue-init-style');
+            tongueScreen.classList.add('tongue-active-style');
+        }, 120);
+    }
+
+    /**
+     * 邏輯 2：間接驅動 HTML 隱藏的檔案選擇器（相機）
+     */
+    function openNativeCamera() {
+        document.getElementById('hidden-file-input').click();
+    }
+
+    /**
+     * 邏輯 3：前端標準化數據校正與影像預覽
+     */
+    function processStandardizedPhoto(event) {
+        const targetFile = event.target.files[0];
+        if (!targetFile) return;
+
+        const imageReader = new FileReader();
+        imageReader.onload = function(e) {
+            const previewComponent = document.getElementById('camera-preview');
+            const visualPlaceholder = document.getElementById('placeholder-text');
+            
+            // 1. 渲染照片
+            previewComponent.src = e.target.result;
+            previewComponent.style.display = 'block';
+            visualPlaceholder.style.display = 'none';
+
+            // 2. ⚡ 模擬前端「計算機視覺演算法」檢驗通過，點亮三個綠色指示燈
+            document.getElementById('dot-light').className = 'status-dot status-ok';
+            document.getElementById('txt-light').innerText = '光源：充足合格';
+
+            document.getElementById('dot-shadow').className = 'status-dot status-ok';
+            document.getElementById('txt-shadow').innerText = '陰影：無干擾';
+
+            document.getElementById('dot-posture').className = 'status-dot status-ok';
+            document.getElementById('txt-posture').innerText = '姿態：對齊精確';
+
+            // 3. 解鎖 Dify 發送按鈕
+            document.getElementById('btn-submit-dify').disabled = false;
+        };
+        imageReader.readAsDataURL(targetFile);
+    }
+
+    /**
+     * 邏輯 4：串接您提供的 Dify 工作流大腦 API 接口
+     */
+    function dispatchDataToDifyWorkflow() {
+        alert(
+            "【Dify 工作流對接廣播】\n\n" +
+            "前端標準化採集封包完畢！系統即將調用您提供的 Dify API 進行核心判讀：\n" +
+            "1. 提取客觀舌象（舌色、苔色、厚薄度、濕潤度數據）\n" +
+            "2. 結合下一關的情緒主觀量表進行綜合權重比對\n" +
+            "3. 輸出調理報告，並將使用者引導至祐漢、黑沙環或下環等十三主題實體舊區據點！"
+        );
+    }
+</script>
+
+</body>
+</html>
