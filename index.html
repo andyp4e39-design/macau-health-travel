@@ -3,193 +3,281 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>澳康遊 (Macau Healer Walk) - SPA 演示原型</title>
+    <title>澳康遊 (Macau Healer Walk) - 雙維度辨證系統</title>
     <style>
         /* ==========================================================================
-           【1. 全域視覺變數與外殼設定】
+           定義全局設計變數與主題色彩 
            ========================================================================== */
         :root {
             --bg-gradient: linear-gradient(135deg, #f4f7f4 0%, #e6ebe6 100%);
-            --sage-green: #4a7c59;   /* 核心草本綠 */
-            --gold-accent: #d4a373;  /* 暖茶金 */
-            --text-dark: #2c3531;    /* 深碳黑 */
-            --card-white: rgba(255, 255, 255, 0.88);
+            --sage-green: #4a7c59;   /* 核心中醫草本綠 */
+            --gold-accent: #d4a373;  /* 經典暖茶金 */
+            --text-dark: #2c3531;    /* 護眼深碳黑 */
+            --card-white: rgba(255, 255, 255, 0.9);
             --success-color: #2f855a;
+            --warning-color: #c05621;
+            --blue-tech: #2b6cb0;    /* 科技藍 */
         }
 
+        /* ==========================================================================
+           全域基礎樣式與手機模擬器外殼 
+           ========================================================================== */
         body {
             margin: 0; padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: #191f1c; /* 暗色背景凸顯手機模擬器 */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #151a18; /* 展覽暗色展示背景 */
             display: flex; justify-content: center; align-items: center;
             height: 100vh; overflow: hidden;
         }
 
-        /* 模擬實體手機畫布（Canvas） */
+        /* 模擬實體手機外殼 */
         .phone-canvas {
             width: 390px;
             height: 844px; /* iPhone 13/14 標準比例 */
             background: var(--bg-gradient);
             border-radius: 42px;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.45);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.5);
             overflow: hidden;
             position: relative;
             box-sizing: border-box;
         }
 
-        /* 背景流體光暈（模擬中醫氣血運行） */
+        /* 背景流體光暈 */
         .bg-glow {
             position: absolute; width: 320px; height: 320px;
-            background: rgba(74, 124, 89, 0.18); filter: blur(75px);
+            background: rgba(74, 124, 89, 0.15); filter: blur(75px);
             border-radius: 50%; top: 15%; left: 5%; z-index: 1;
-            animation: floatGlow 7s ease-in-out infinite alternate;
+            animation: floatGlow 8s ease-in-out infinite alternate;
         }
         @keyframes floatGlow {
             0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(25px, 20px) scale(1.15); }
+            100% { transform: translate(20px, 15px) scale(1.12); }
         }
 
         /* ==========================================================================
-           【2. SPA 核心：圖層基礎配置與轉場動畫 CSS】
-           技術組注意：所有畫面都疊在同一個地方，透過 transition 達成流暢切換
+           SPA 核心轉場架構與通用排版 
            ========================================================================== */
         .screen {
-            position: absolute;
-            top: 0; left: 0;
+            position: absolute; top: 0; left: 0;
             width: 100%; height: 100%;
-            padding: 55px 26px 35px 26px;
+            padding: 50px 24px 30px 24px;
             box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
+            display: flex; flex-direction: column;
             justify-content: space-between;
             z-index: 5;
-            /* 預設的轉場物理效果：0.6秒、自訂貝茲曲線（帶有一點優雅的減速彈性） */
-            transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1), 
-                        transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            transition: opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1), 
+                        transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
-        /* 【轉場狀態 A】歡迎封面離場：往上飄移並變透明 */
-        .cover-exit-style {
+        /* 統一圖層過渡動畫 */
+        .hidden {
             opacity: 0;
-            transform: translateY(-40px);
-            pointer-events: none; /* 轉場時鎖定點擊，防止重複觸發 */
-        }
-
-        /* 【轉場狀態 B】舌診畫面登場前：隱藏在下方 40px 處靜候 */
-        .tongue-init-style {
-            opacity: 0;
-            transform: translateY(40px);
             pointer-events: none;
+            transform: translateY(40px);
         }
 
-        /* 【轉場狀態 C】舌診畫面正式登場：回到原位並顯現 */
-        .tongue-active-style {
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: auto;
+        /* 滾動容器：確保長內容在手機外殼中完美滑動 */
+        .scrollable-content {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 4px;
+            margin-bottom: 15px;
+        }
+        .scrollable-content::-webkit-scrollbar {
+            width: 4px;
+        }
+        .scrollable-content::-webkit-scrollbar-thumb {
+            background: rgba(74, 124, 89, 0.2);
+            border-radius: 2px;
         }
 
         /* ==========================================================================
-           【3. 畫面一：歡迎封面 (Cover) 專屬樣式】
+           歡迎封面 (Cover Screen) 樣式 
            ========================================================================== */
-        .top-content { z-index: 2; text-align: center; margin-top: 25px; width: 100%; }
-        
+        .top-content { z-index: 2; text-align: center; margin-top: 15px; }
         .app-logo {
-            width: 95px; height: 95px; background: var(--sage-green); border-radius: 26px;
-            margin: 0 auto 26px auto; display: flex; justify-content: center; align-items: center;
-            box-shadow: 0 12px 24px rgba(74, 124, 89, 0.25);
+            width: 90px; height: 90px; background: var(--sage-green); border-radius: 24px;
+            margin: 0 auto 20px auto; display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 10px 20px rgba(74, 124, 89, 0.2);
         }
-        .app-logo::after { content: '☯'; font-size: 46px; color: #faf6f0; }
-
-        .app-title-cn { font-size: 38px; font-weight: 800; color: var(--text-dark); letter-spacing: 7px; margin: 0; }
+        .app-logo::after { content: '☯'; font-size: 44px; color: #faf6f0; }
+        .app-title-cn { font-size: 38px; font-weight: 800; color: var(--text-dark); letter-spacing: 6px; margin: 0; }
         .app-title-en { font-size: 13px; font-weight: 600; color: #6e7a75; letter-spacing: 2.5px; text-transform: uppercase; margin: 6px 0 0 0; }
-        
-        .app-slogan { font-size: 14.5px; color: #4a5450; margin-top: 24px; letter-spacing: 1.5px; line-height: 1.6; }
+        .app-slogan { font-size: 14px; color: #4a5450; margin-top: 18px; letter-spacing: 1px; line-height: 1.5; }
 
-        /* 計劃書四大技術亮點標籤 */
         .badge-grid {
             display: grid; grid-template-columns: repeat(2, 1fr);
-            gap: 10px; margin: 35px auto 0 auto; max-width: 280px;
+            gap: 8px; margin: 25px auto 0 auto; max-width: 280px;
         }
         .concept-badge {
-            background: var(--card-white); border: 1px solid rgba(74, 124, 89, 0.2);
-            padding: 8px 10px; border-radius: 14px; font-size: 12px;
+            background: var(--card-white); border: 1px solid rgba(74, 124, 89, 0.15);
+            padding: 8px; border-radius: 12px; font-size: 11px;
             color: var(--sage-green); font-weight: 600; text-align: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.02); backdrop-filter: blur(5px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.01); backdrop-filter: blur(5px);
         }
 
         .btn-enter {
-            width: 100%; background: var(--sage-green); color: #ffffff; border: none; padding: 16px;
-            border-radius: 35px; font-size: 16px; font-weight: 700; letter-spacing: 2px; cursor: pointer;
-            box-shadow: 0 10px 25px rgba(74, 124, 89, 0.3); transition: all 0.3s ease;
+            width: 100%; background: var(--sage-green); color: #ffffff; border: none; padding: 15px;
+            border-radius: 30px; font-size: 16px; font-weight: 700; letter-spacing: 2px; cursor: pointer;
+            box-shadow: 0 8px 20px rgba(74, 124, 89, 0.25); transition: all 0.3s ease;
             animation: pulseButton 2s infinite;
         }
         .btn-enter:hover { background: #3a6246; }
         @keyframes pulseButton {
-            0% { box-shadow: 0 0 0 0 rgba(74, 124, 89, 0.5); }
-            70% { box-shadow: 0 0 0 14px rgba(74, 124, 89, 0); }
+            0% { box-shadow: 0 0 0 0 rgba(74, 124, 89, 0.4); }
+            70% { box-shadow: 0 0 0 12px rgba(74, 124, 89, 0); }
             100% { box-shadow: 0 0 0 0 rgba(74, 124, 89, 0); }
         }
-
-        .footer-info { font-size: 11px; color: #9ba6a1; letter-spacing: 1px; margin-top: 22px; }
+        .footer-info { font-size: 11px; color: #9ba6a1; letter-spacing: 1px; margin-top: 15px; }
 
         /* ==========================================================================
-           【4. 畫面二：AI 舌診數據採集 專屬樣式】
+           AI 舌診前端採集 (Tongue Screen) 樣式 
            ========================================================================== */
         .tongue-header { text-align: center; }
-        .tongue-header h2 { margin: 0; font-size: 23px; color: var(--sage-green); font-weight: 700; }
-        .tongue-header p { margin: 6px 0 0 0; font-size: 12.5px; color: #626d68; line-height: 1.4; }
+        .tongue-header h2 { margin: 0; font-size: 21px; color: var(--sage-green); font-weight: 700; }
+        .tongue-header p { margin: 4px 0 0 0; font-size: 12px; color: #626d68; }
 
-        /* 標準化相機框 */
         .camera-container {
-            width: 100%; height: 350px; background: #232a27; border-radius: 28px;
+            width: 100%; height: 320px; background: #232a27; border-radius: 24px;
             position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center;
-            box-shadow: inset 0 4px 20px rgba(0,0,0,0.5); margin: 15px 0; border: 2px solid rgba(255,255,255,0.1);
+            box-shadow: inset 0 4px 15px rgba(0,0,0,0.5); margin: 12px 0; border: 2px solid rgba(255,255,255,0.08);
         }
 
-        /* 生理結構對齊引導虛線框 */
         .tongue-alignment-frame {
-            position: absolute; width: 150px; height: 200px;
+            position: absolute; width: 140px; height: 180px;
             border: 2.5px dashed var(--gold-accent); border-radius: 50% 50% 42% 42%;
-            opacity: 0.85; z-index: 3; box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.45); pointer-events: none;
+            opacity: 0.8; z-index: 3; box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.4); pointer-events: none;
         }
         .tongue-alignment-frame::after {
-            content: '請將「舌體」對齊此虛線框'; position: absolute; bottom: -32px; left: 50%;
+            content: '請將「舌體」對齊虛線框'; position: absolute; bottom: -30px; left: 50%;
             transform: translateX(-50%); color: var(--gold-accent); font-size: 11px; font-weight: 600;
-            white-space: nowrap; letter-spacing: 1px; background: rgba(0,0,0,0.6); padding: 2px 8px; border-radius: 4px;
+            white-space: nowrap; background: rgba(0,0,0,0.6); padding: 2px 6px; border-radius: 4px;
         }
 
         #camera-preview { width: 100%; height: 100%; object-fit: cover; display: none; z-index: 2; }
-        .camera-placeholder { color: #a3b0aa; text-align: center; font-size: 13.5px; z-index: 1; padding: 25px; line-height: 1.6; }
+        .camera-placeholder { color: #a3b0aa; text-align: center; font-size: 13px; z-index: 1; padding: 20px; line-height: 1.5; }
 
-        /* 即時前端環境校正指示燈面板 */
         .detector-panel {
-            background: var(--card-white); border-radius: 18px; padding: 14px 10px;
-            display: flex; justify-content: space-around; border: 1px solid rgba(74, 124, 89, 0.15);
+            background: var(--card-white); border-radius: 16px; padding: 12px 8px;
+            display: flex; justify-content: space-around; border: 1px solid rgba(74, 124, 89, 0.12);
         }
-        .detector-item { text-align: center; font-size: 11.5px; color: #3a4440; font-weight: 500; }
-        .status-dot { width: 11px; height: 11px; border-radius: 50%; margin: 0 auto 6px auto; background: #cbd5e0; transition: all 0.3s ease; }
-        .status-ok { background: var(--success-color); box-shadow: 0 0 10px rgba(47, 133, 90, 0.8); }
+        .detector-item { text-align: center; font-size: 11px; color: #3a4440; font-weight: 500; }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; margin: 0 auto 5px auto; background: #cbd5e0; transition: all 0.3s ease; }
+        .status-ok { background: var(--success-color); box-shadow: 0 0 8px rgba(47, 133, 90, 0.6); }
 
-        /* 操作按鈕與合規防線 */
-        .action-container { width: 100%; }
         .btn-capture {
-            width: 100%; background: #2b6cb0; color: white; border: none; padding: 15px;
-            border-radius: 28px; font-size: 15px; font-weight: 700; cursor: pointer;
-            margin-bottom: 12px; box-shadow: 0 6px 16px rgba(43, 108, 176, 0.25);
+            width: 100%; background: var(--blue-tech); color: white; border: none; padding: 14px;
+            border-radius: 25px; font-size: 14px; font-weight: 700; cursor: pointer;
+            margin-bottom: 10px; box-shadow: 0 5px 12px rgba(43, 108, 176, 0.2);
         }
         .btn-api-send {
-            width: 100%; background: var(--sage-green); color: white; border: none; padding: 15px;
-            border-radius: 28px; font-size: 15px; font-weight: 700; cursor: pointer;
-            box-shadow: 0 6px 16px rgba(74, 124, 89, 0.25);
+            width: 100%; background: var(--sage-green); color: white; border: none; padding: 14px;
+            border-radius: 25px; font-size: 14px; font-weight: 700; cursor: pointer;
+            box-shadow: 0 5px 12px rgba(74, 124, 89, 0.2);
         }
         .btn-api-send:disabled { background: #bdc7c2; color: #ffffff; cursor: not-allowed; box-shadow: none; }
         #hidden-file-input { display: none; }
+        .legal-disclaimer { font-size: 9px; color: #8a9490; text-align: justify; margin-top: 10px; line-height: 1.3; border-top: 1px dashed rgba(0,0,0,0.1); padding-top: 8px; }
+
+        /* ==========================================================================
+           七情情緒問卷 (Emotion Screen) 樣式 
+           ========================================================================== */
+        .survey-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .survey-progress-text { font-size: 12px; font-weight: 700; color: var(--sage-green); }
+        .survey-category { font-size: 11px; background: var(--gold-accent); color: white; padding: 2px 8px; border-radius: 10px; font-weight: bold; }
         
-        .legal-disclaimer {
-            font-size: 10px; color: #8a9490; text-align: justify; margin-top: 14px;
-            line-height: 1.4; border-top: 1px dashed rgba(0,0,0,0.1); padding-top: 10px;
+        /* 橫向發光進度條 */
+        .survey-progress-bar-bg { width: 100%; height: 6px; background: #e2e8f0; border-radius: 3px; margin-bottom: 14px; overflow: hidden; }
+        .survey-progress-bar-fill { height: 100%; width: 0%; background: var(--sage-green); border-radius: 3px; transition: width 0.3s ease; box-shadow: 0 0 6px rgba(74, 124, 89, 0.5); }
+
+        .question-card { background: var(--card-white); border-radius: 18px; padding: 16px; border: 1px solid rgba(74, 124, 89, 0.1); margin-bottom: 15px; }
+        .question-text { font-size: 14.5px; font-weight: bold; color: var(--text-dark); line-height: 1.5; margin: 0; }
+
+        /* 選擇題選項設計 */
+        .option-list { display: flex; flex-direction: column; gap: 8px; }
+        .option-item {
+            background: white; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 11px 14px;
+            font-size: 12.5px; color: #3a4440; cursor: pointer; line-height: 1.4;
+            transition: all 0.2s ease; display: flex; align-items: center; gap: 8px;
         }
+        .option-item:hover { border-color: var(--sage-green); background: #f0f7f3; }
+        .option-item.selected { border-color: var(--sage-green); background: #e6f3eb; font-weight: 600; color: var(--sage-green); }
+        .option-letter { font-weight: bold; color: var(--gold-accent); min-width: 18px; }
+
+        /* 上一步、下一步導航欄 */
+        .survey-nav { display: flex; gap: 10px; }
+        .btn-nav-prev {
+            flex: 1; background: white; border: 1.5px solid var(--sage-green); color: var(--sage-green);
+            padding: 12px; border-radius: 25px; font-size: 14px; font-weight: bold; cursor: pointer;
+        }
+        .btn-nav-next {
+            flex: 2; background: var(--sage-green); color: white; border: none;
+            padding: 12px; border-radius: 25px; font-size: 14px; font-weight: bold; cursor: pointer;
+            box-shadow: 0 4px 10px rgba(74, 124, 89, 0.15);
+        }
+        .btn-nav-next:disabled { background: #cbd5e0; cursor: not-allowed; box-shadow: none; }
+
+        /* ==========================================================================
+           AI 綜合辨證結果 (Result Screen) 樣式 
+           ========================================================================== */
+        .result-title-section { text-align: center; margin-bottom: 10px; }
+        .result-title-section h2 { margin: 0; font-size: 21px; color: var(--sage-green); font-weight: bold; }
+        
+        .result-card { background: var(--card-white); border-radius: 18px; padding: 14px; border: 1px solid rgba(74, 124, 89, 0.15); margin-bottom: 12px; }
+        .result-subtitle { font-size: 13px; font-weight: 800; color: var(--gold-accent); margin: 0 0 8px 0; border-bottom: 1px dashed rgba(74, 124, 89, 0.2); padding-bottom: 4px; }
+        
+        /* 氣候與情緒雷達指標 */
+        .radar-badge-row { display: flex; gap: 8px; margin-bottom: 8px; }
+        .radar-badge { flex: 1; background: #f0f7f3; border-radius: 8px; padding: 8px; text-align: center; border: 1px solid rgba(74,124,89,0.1); }
+        .radar-badge-val { font-size: 15px; font-weight: bold; color: var(--sage-green); }
+        .radar-badge-lbl { font-size: 10px; color: #718096; margin-top: 2px; }
+
+        /* Citywalk 實體舊區路線排版（仿時間軸） */
+        .route-timeline { display: flex; flex-direction: column; gap: 12px; position: relative; padding-left: 10px; margin-top: 8px; }
+        .route-node { border-left: 2px dashed var(--sage-green); padding-left: 18px; position: relative; padding-bottom: 4px; }
+        .route-node::before {
+            content: ''; position: absolute; width: 10px; height: 10px;
+            background: var(--gold-accent); border-radius: 50%; left: -6px; top: 4px;
+            box-shadow: 0 0 6px rgba(212, 163, 115, 0.8);
+        }
+        .route-node:last-child { border-left: none; padding-bottom: 0; }
+        .route-node-title { font-size: 13px; font-weight: bold; color: var(--text-dark); }
+        .route-node-desc { font-size: 11px; color: #4a5568; margin-top: 3px; line-height: 1.4; }
+
+        .btn-reset {
+            width: 100%; background: var(--sage-green); color: white; border: none; padding: 14px;
+            border-radius: 25px; font-size: 14px; font-weight: 700; cursor: pointer;
+            box-shadow: 0 5px 12px rgba(74, 124, 89, 0.2);
+        }
+
+        /* ==========================================================================
+           全局覆蓋式自訂彈窗樣式 
+           ========================================================================== */
+        .modal-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.65); z-index: 99; display: flex; justify-content: center;
+            align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-card {
+            width: 80%; background: white; border-radius: 24px; padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); text-align: center;
+            transform: scale(0.9); transition: transform 0.3s ease;
+        }
+        .modal-overlay.active .modal-card { transform: scale(1); }
+        .modal-title { font-size: 16px; font-weight: bold; color: var(--sage-green); margin: 0 0 10px 0; }
+        .modal-body { font-size: 13px; color: #4a5568; line-height: 1.5; margin-bottom: 18px; text-align: left; }
+        .btn-modal-close {
+            background: var(--sage-green); color: white; border: none; padding: 10px 24px;
+            border-radius: 18px; font-size: 13px; font-weight: bold; cursor: pointer; width: 100%;
+        }
+
+        /* 旋轉的中醫 Loading */
+        .loading-icon {
+            font-size: 40px; color: var(--sage-green); margin-bottom: 12px;
+            animation: spin 1.5s linear infinite; display: inline-block;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -197,6 +285,7 @@
 <div class="phone-canvas">
     <div class="bg-glow"></div>
 
+    <!-- 畫面一：歡迎封面 (Cover 圖層) -->
     <div id="screen-cover" class="screen">
         <div class="top-content">
             <div class="app-logo"></div>
@@ -205,14 +294,14 @@
             
             <div class="app-slogan">
                 <strong>AI 舌診情志雙辨證</strong><br>
-                探索民生舊區 · 享受主題養生漫步
+                探索民生舊區 · 享受主題養生漫步[cite: 2]
             </div>
             
             <div class="badge-grid">
                 <div class="concept-badge">🧬 客觀舌象量化</div>
-                <div class="concept-badge">📊 七情內傷測評</div>
-                <div class="concept-badge">🗺️ 13主題Citywalk</div>
-                <div class="concept-badge">🏪 舊區商戶導流</div>
+                <div class="concept-badge">📊 七情症狀測評</div>
+                <div class="concept-badge">🗺️ 13主題Citywalk[cite: 2]</div>
+                <div class="concept-badge">🏪 舊區商戶導流[cite: 2]</div>
             </div>
         </div>
 
@@ -222,7 +311,8 @@
         </div>
     </div>
 
-    <div id="screen-tongue" class="screen tongue-init-style">
+    <!-- 畫面二：AI 舌診數據採集 (Tongue 圖層) -->
+    <div id="screen-tongue" class="screen hidden">
         <div class="tongue-header">
             <h2>AI 數據標準化採集</h2>
             <p>第一階段：客觀舌象特徵量化（對應外感六淫體質）</p>
@@ -246,49 +336,316 @@
         <div class="action-container">
             <input type="file" id="hidden-file-input" accept="image/*" onchange="processStandardizedPhoto(event)">
             <button class="btn-capture" onclick="openNativeCamera()">📷 啟動模擬拍照 / 上傳舌象</button>
-            <button class="btn-api-send" id="btn-submit-dify" disabled onclick="dispatchDataToDifyWorkflow()">🧬 傳送 AI 多模態辨證</button>
+            <button class="btn-api-send" id="btn-submit-dify" disabled onclick="navigateToSurveyScreen()">🧬 下一步：填寫情志量表</button>
             
             <div class="legal-disclaimer">
                 * <strong>風險聲明</strong>：本系統數據與辨證報告僅作中醫科普與文旅養生調理建議參考，不具備醫療診斷效力，無法取代執業中醫師面診與臨床診斷。
             </div>
         </div>
     </div>
+
+    <!-- 畫面三：七情情緒與身體反應問卷 (Survey 圖層) -->
+    <div id="screen-emotion" class="screen hidden">
+        <div>
+            <div class="survey-header">
+                <span class="survey-progress-text" id="lbl-survey-progress">問題 1 / 14</span>
+                <span class="survey-category" id="lbl-survey-category">日常心理與情緒反應</span>
+            </div>
+            
+            <div class="survey-progress-bar-bg">
+                <div class="survey-progress-bar-fill" id="bar-survey-fill"></div>
+            </div>
+
+            <div class="scrollable-content" style="max-height: 520px;">
+                <div class="question-card">
+                    <p class="question-text" id="lbl-question-text">載入中...</p>
+                </div>
+
+                <div class="option-list" id="panel-option-list">
+                    <!-- 選項將由 JavaScript 動態生成 -->
+                </div>
+            </div>
+        </div>
+
+        <div class="survey-nav">
+            <button class="btn-nav-prev" onclick="prevQuestion()" id="btn-survey-prev">上一步</button>
+            <button class="btn-nav-next" onclick="nextQuestion()" id="btn-survey-next" disabled>下一步</button>
+        </div>
+    </div>
+
+    <!-- 畫面四：多模態綜合辨證報告 (Result 圖層) -->
+    <div id="screen-result" class="screen hidden">
+        <div class="result-title-section">
+            <h2>身心多元調養處方</h2>
+            <p style="font-size: 11px; color:#718096; margin:4px 0 0 0;">AI 雙維度多模態辨證系統</p>
+        </div>
+
+        <div class="scrollable-content">
+            <div class="result-card">
+                <div class="result-subtitle">🔍 雙維度診斷結論</div>
+                <div class="radar-badge-row">
+                    <div class="radar-badge">
+                        <div class="radar-badge-val" id="res-six-evils">外感濕邪</div>
+                        <div class="radar-badge-lbl">客觀六淫失衡</div>
+                    </div>
+                    <div class="radar-badge">
+                        <div class="radar-badge-val" id="res-seven-moods">憂心不展</div>
+                        <div class="radar-badge-lbl">主觀七情內傷</div>
+                    </div>
+                </div>
+                <p id="res-diagnosis-desc" style="font-size: 12px; color:#4a5568; margin:6px 0 0 0; line-height: 1.45;"></p>
+            </div>
+
+            <div class="result-card">
+                <div class="result-subtitle">🍵 藥食同源調理方案</div>
+                <p id="res-diet-name" style="font-size: 14px; font-weight: bold; color: var(--sage-green); margin:0 0 4px 0;"></p>
+                <p id="res-diet-desc" style="font-size: 12px; color:#4a5568; margin:0 0 8px 0; line-height: 1.45;"></p>
+                <div style="background:#f0f7f3; border-radius:8px; padding:6px 10px; font-size: 11px; color: var(--success-color); display:flex; align-items:center; gap:6px;">
+                    🏪 <strong>本地老字號推薦：</strong> <span id="res-diet-shop"></span>
+                </div>
+            </div>
+
+            <div class="result-card">
+                <div class="result-subtitle">🚶 個人化舊區避邪調養路線[cite: 2]</div>
+                <p style="font-size: 11px; color:#718096; margin:0 0 8px 0;">依據您的體質精準匹配，避開喧囂，疏通經絡氣血：</p>
+                <div class="route-timeline" id="res-route-timeline">
+                    <!-- 由 JavaScript 動態生成 -->
+                </div>
+            </div>
+
+            <div style="font-size: 10px; color:#718096; background:rgba(0,0,0,0.03); border-radius:12px; padding:10px; margin-top:5px; line-height: 1.45;">
+                🚫 <strong>友善社區提示：</strong> 本路線導引進入祐漢、下環等民生住宅舊區。夜間 20:00 後部分據點自動關閉諮詢，請漫步者降低音量，保障居民安寧。
+            </div>
+        </div>
+
+        <div style="width:100%;">
+            <button class="btn-reset" onclick="resetApp()">重新體驗</button>
+        </div>
+    </div>
+
+    <!-- 全局覆蓋式自訂彈窗（Modal） -->
+    <div class="modal-overlay" id="custom-modal">
+        <div class="modal-card">
+            <div id="modal-loader" style="display:none;">
+                <span class="loading-icon">☯</span>
+                <p style="font-size: 13px; color:#4a5568; font-weight: bold;">AI 正在進行多模態大腦辨證...</p>
+                <p style="font-size: 11px; color:#718096; margin-top: -6px;">合流客觀舌象與 14 題情志問卷結果</p>
+            </div>
+            <div id="modal-content">
+                <div class="modal-title" id="modal-title">提示</div>
+                <div class="modal-body" id="modal-body">內容</div>
+                <button class="btn-modal-close" onclick="closeModal()">確定</button>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <script>
-    /**
-     * 邏輯 1：SPA 絲滑轉場核心控制
-     * 老師提示：此函數精準控制 CSS 的 class 動態切換，達成無縫轉場
-     */
+    const surveyDatabase = [
+        {
+            category: "一、 日常心理與情緒反應",
+            text: "1. 當你最近遇到突如其來的意外狀況（如：走在路上突然有大響聲，或被同事突然叫住）時，你通常第一反應是？",
+            options: [
+                { val: "A", text: "沒什麼感覺，甚至覺得有點好笑或好玩" },
+                { val: "B", text: "立刻覺得莫名火大，想指責對方或抱怨" },
+                { val: "C", text: "感到一陣莫名的悲傷，覺得自己怎麼總是遇到這種事" },
+                { val: "D", text: "開始不斷反思、分析為什麼會發生這件事，停不下來" },
+                { val: "E", text: "覺得前途茫茫，心裡充滿無助與憂愁" },
+                { val: "F", text: "整個人瞬間嚇傻、腦袋一片空白，心跳漏一拍" },
+                { val: "G", text: "感到強烈的害怕與不安，本能地想逃跑或躲起來" }
+            ]
+        },
+        {
+            category: "一、 日常心理與情緒反應",
+            text: "2. 在工作、學業或人際關係上遇到挫折時，你最常出現的心理狀態是？",
+            options: [
+                { val: "A", text: "哈哈大笑帶過，或者很快就找別的樂子分散注意力" },
+                { val: "B", text: "非常憤怒，覺得世界不公平，或是氣自己、氣別人" },
+                { val: "C", text: "感到極度沮喪，眼眶泛淚，甚至想大哭一場" },
+                { val: "D", text: "腦袋不停運轉，反覆思索細節、琢磨解決辦法到失眠" },
+                { val: "E", text: "終日愁眉不展，擔心未來該怎麼辦，總往壞處想" },
+                { val: "F", text: "心神不寧、驚慌失措，完全不知道下一步該怎麼辦" },
+                { val: "G", text: "感到內心極度恐懼，害怕要承擔嚴重的後果或懲罰" }
+            ]
+        },
+        {
+            category: "一、 日常心理與情緒反應",
+            text: "3. 當你處在安靜、獨處的環境中時，你的內心小劇場通常在演什麼？",
+            options: [
+                { val: "A", text: "沉浸在興奮、亢奮的幻想中，或回想快樂好笑的事" },
+                { val: "B", text: "回想那些讓你生氣、不滿的人事物，越想越火大" },
+                { val: "C", text: "容易觸景傷情，想起過去遺憾、失去或令人悲傷的事" },
+                { val: "D", text: "規劃各種待辦事項，或反覆糾結某個還沒解決的問題" },
+                { val: "E", text: "為未來的事情感到憂慮、焦慮，覺得壓力很大" },
+                { val: "F", text: "總覺得心慌慌的、定不下來，好像隨時有壞事要發生" },
+                { val: "G", text: "感到莫名的害怕，或是對健康、死亡、未知感到恐懼" }
+            ]
+        },
+        {
+            category: "二、 身體與生理症狀反應",
+            text: "4. 最近一兩週，你的睡眠品質最符合以下哪種描述？",
+            options: [
+                { val: "A", text: "精神太亢奮、太高興而不想睡，或是睡著了常做開心的夢" },
+                { val: "B", text: "帶著怒氣或怨氣入睡，睡不著，或者夢到與人吵架、打架" },
+                { val: "C", text: "睡前心情低落想哭，夢境多半淒涼、悲傷或哭醒" },
+                { val: "D", text: "躺在床上腦袋關不掉、想太多而慢性的失眠" },
+                { val: "E", text: "憂鬱、焦慮到睡不著，或是睡眠很淺、容易早醒" },
+                { val: "F", text: "經常被惡夢驚醒，或是睡著時有一種身體突然踩空的驚嚇感" },
+                { val: "G", text: "睡得極不安穩，常夢到被追殺、掉入深淵等恐懼的場景" }
+            ]
+        },
+        {
+            category: "二、 身體與生理症狀反應",
+            text: "5. 關於你最近的「腸胃與食慾」狀況，以下哪項最符合？",
+            options: [
+                { val: "A", text: "食慾異常旺盛，吃東西特別高興，甚至有點暴飲暴食" },
+                { val: "B", text: "一生氣或壓力大就胃痛、胃脹氣，或者氣到吃不下飯" },
+                { val: "C", text: "吃飯時覺得沒味道，心情悲傷、沒胃口" },
+                { val: "D", text: "思考事情或壓力大時，肚子就發脹、不想吃，甚至消化不良" },
+                { val: "E", text: "終日憂愁、悶悶不樂，導致食慾不振、身體消瘦" },
+                { val: "F", text: "一受到驚嚇或緊張，胃就突然一陣猛烈抽痛或心悸" },
+                { val: "G", text: "遇到害怕的事情時，肚子會突然絞痛，甚至想拉肚子、頻尿" }
+            ]
+        },
+        {
+            category: "二、 身體與生理症狀反應",
+            text: "6. 觀察一下自己最近的「呼吸與胸腹部」感受，哪一種最明顯？",
+            options: [
+                { val: "A", text: "常常興奮到呼吸急促，或是高興得大聲說話、心跳加快" },
+                { val: "B", text: "覺得有一股氣往上衝，經常胸悶、頭暈目眩、面紅耳赤" },
+                { val: "C", text: "經常忍不住想「嘆氣」，覺得胸口悶痛、意志消沉" },
+                { val: "D", text: "胸口悶悶的、氣好像卡在肚子或胃部，動彈不得" },
+                { val: "E", text: "覺得呼吸氣短、沒力氣說話，整個人無精打采" },
+                { val: "F", text: "常常覺得心怦怦跳（心悸）、手腳發抖、定不下來" },
+                { val: "G", text: "雙腿容易酸軟無力，甚至驚嚇害怕時有大小便失禁的傾向" }
+            ]
+        },
+        {
+            category: "三、 社交行為與日常表現",
+            text: "7. 在與家人、朋友或同事溝通時，你最近的說話習慣和語氣比較接近？",
+            options: [
+                { val: "A", text: "說話速度快、聲音大、笑聲不斷，有時會興奮到滔滔不絕" },
+                { val: "B", text: "語氣生硬、帶著批判性，容忍度低，一言不合就想爭辯" },
+                { val: "C", text: "說話聲音低沉、有氣無力，聊著聊著就容易語帶哽咽或嘆氣" },
+                { val: "D", text: "說話邏輯非常緊密、細節很多，但有時會顯得猶豫不決、繞圈子" },
+                { val: "E", text: "說話時常常眉頭深鎖、語氣焦慮，不斷表達對各種事情的擔憂" },
+                { val: "F", text: "說話時容易顯得慌張、結巴、語無倫次，眼神飄忽不定" },
+                { val: "G", text: "說話聲音很小、唯唯諾諾，不太敢表達自己的真實想法" }
+            ]
+        },
+        {
+            category: "三、 社交行為與日常表現",
+            text: "8. 當你休假或有空閒時間時，你最常處於什麼樣的狀態？",
+            options: [
+                { val: "A", text: "瘋狂安排娛樂活動、聚會開趴，讓自己處在高度快樂和熱鬧中" },
+                { val: "B", text: "容易看周遭的人事物不順眼，放假也在抱怨工作或生活中的不公" },
+                { val: "C", text: "什麼都不想做，只想把自己關在房間裡哭一場或放空，與世隔絕" },
+                { val: "D", text: "雖然肉體在休息，但腦袋還在瘋狂複盤、計劃接下來的事情，無法真正放鬆" },
+                { val: "E", text: "焦慮到坐立難安，一閒下來就開始擔心未來、財富或健康問題" },
+                { val: "F", text: "一有風吹草動就緊張兮兮（如手機一響就心跳加速），無法安靜下來" },
+                { val: "G", text: "變得很宅、膽小，抗拒社交，待在熟悉的環境裡才稍微有安全感" }
+            ]
+        },
+        {
+            category: "三、 社交行為與日常表現",
+            text: "9. 面對工作或生活中的重大「決策」與「變動」時，你的心態通常是？",
+            options: [
+                { val: "A", text: "盲目樂觀，覺得天塌下來都有人頂著，容易衝動做出決定" },
+                { val: "B", text: "容易覺得被針對或被冒犯，會帶著對抗、不服輸的心態去面對" },
+                { val: "C", text: "覺得自己能力不足、命運坎坷，還沒開始做就覺得自己注定失敗" },
+                { val: "D", text: "陷入極度的「選擇障礙」，反覆分析各種利弊，糾結到痛苦不堪" },
+                { val: "E", text: "預期所有最壞的結果，還沒變動就先被無形的巨大壓力壓垮" },
+                { val: "F", text: "突然接到通知會腦袋一片混亂、不知所措，手忙腳亂" },
+                { val: "G", text: "內心極度退縮、恐懼，第一反應是想逃避、抗拒任何改變" }
+            ]
+        },
+        {
+            category: "四、 深度軀體與生理症狀",
+            text: "10. 最近你的「頭部與五官」有沒有以下哪種最明顯的舒適或不適感？",
+            options: [
+                { val: "A", text: "常常覺得頭腦發熱、臉部表情肌亢奮、嘴角不自覺上揚" },
+                { val: "B", text: "經常偏頭痛（尤其是兩側）、眼睛乾澀、充血發紅，或覺得嘴巴苦苦的" },
+                { val: "C", text: "覺得頭昏沉、眼淚不自覺流下來、常有鼻塞或呼吸不順的感覺" },
+                { val: "D", text: "覺得頭暈、記憶力下降、用腦過度導致兩眼無神、臉色發黃" },
+                { val: "E", text: "經常眉頭緊鎖、覺得頭頂有壓迫感，神情看起來憔悴疲憊" },
+                { val: "F", text: "容易耳鳴（突發性的尖銳聲音）、眼神驚恐、常有快要暈倒的感覺" },
+                { val: "G", text: "經常覺得後腦杓到脖子一陣發涼、耳鳴（悶悶的蟬鳴聲）、臉色蒼白" }
+            ]
+        },
+        {
+            category: "四、 深度軀體與生理症狀",
+            text: "11. 關於「肌肉、關節與肢體」的緊繃感，你最常體驗到的是？",
+            options: [
+                { val: "A", text: "四肢舞動、靜不下來、走路輕飄飄的好像在飛" },
+                { val: "B", text: "肩頸肌肉極度僵硬，尤其是生氣時，拳頭或下巴會不自覺咬緊" },
+                { val: "C", text: "全身癱軟無力、提不起勁、連手腳都不想動" },
+                { val: "D", text: "坐姿容易駝背，肌肉緊繃但無力，常覺得四肢沉重、提不起精神" },
+                { val: "E", text: "胸廓、肋骨兩側常有一種緊繃、悶脹、氣透不出來的感覺" },
+                { val: "F", text: "身體經常莫名其妙抖動、手指發麻、或是肌肉突然抽搐一下" },
+                { val: "G", text: "雙腿關節痠軟（特別是膝蓋）、腰部痠痛，走起路來腳步不穩" }
+            ]
+        },
+        {
+            category: "四、 深度軀體與生理症狀",
+            text: "12. 仔細觀察你最近的「排泄（小便與大便）」情況，最符合以下哪種？",
+            options: [
+                { val: "A", text: "沒什麼特別異常，但高興時可能頻尿，排泄與情緒關聯不大" },
+                { val: "B", text: "便秘與腹瀉交替出現，通常伴隨著心情暴躁或生氣" },
+                { val: "C", text: "大便稀軟、次數變多，常常伴隨著情緒低落、哭泣" },
+                { val: "D", text: "大便黏膩、不易沖掉，排便不順暢，肚子常常咕嚕嚕叫" },
+                { val: "E", text: "經常性秘結（便秘），因為焦慮憂慮導致腸胃蠕動變慢" },
+                { val: "F", text: "一受到驚嚇就會突然很有便意、尿意，排泄完全被突發情緒控制" },
+                { val: "G", text: "經常夜尿（一個晚上跑好幾次廁所）、或是害怕時尿急、小便清長" }
+            ]
+        },
+        {
+            category: "五、 能量與體質綜合表現",
+            text: "13. 對於「環境溫度」或「季節交替」，你最近的身體適應力如何？",
+            options: [
+                { val: "A", text: "怕熱、喜歡吹風、吃冰，稍微動一下就滿頭大汗" },
+                { val: "B", text: "情緒一波動就覺得身體發熱、燥熱，吹到風反而容易頭痛" },
+                { val: "C", text: "異常怕冷，一到秋冬或吹冷氣就悲從中來，覺得世界特別淒涼" },
+                { val: "D", text: "適應力還可以，但只要季節一換、想太多，脾胃就容易出狀況" },
+                { val: "E", text: "對環境非常敏感，天氣陰沉、下雨時，心情和身體也會跟著沉重、不適" },
+                { val: "F", text: "身體對溫度的調節變差，常一陣冷、一陣熱，容易被冷氣驚到" },
+                { val: "G", text: "極度怕冷，尤其是手腳冰冷，風一吹就覺得骨頭、腰背發涼" }
+            ]
+        },
+        {
+            category: "五、 能量與體質綜合表現",
+            text: "14. 如果用一種動物的「能量狀態」來形容你最近的生命力，你覺得最像？",
+            options: [
+                { val: "A", text: "活潑跳躍的小狗，能量滿滿，隨時準備大鬧一場" },
+                { val: "B", text: "被激怒的刺蝟或公牛，渾身帶刺，隨時準備戰鬥或爆發" },
+                { val: "C", text: "受傷躲在洞穴裡哭泣的小貓，毫無活力，自憐自哀" },
+                { val: "D", text: "在滾輪上不停跑動的倉鼠，腦袋一刻不得閒，把自己累得半死" },
+                { val: "E", text: "鴕鳥，面對龐大的壓力只想把頭埋進沙子裡，滿心憂愁" },
+                { val: "F", text: "隨時受到驚嚇的小鹿，豎起耳朵，一有動靜就慌張跳開" },
+                { val: "G", text: "縮在殼裡的老烏龜，膽小恐懼，極度缺乏安全感，畏畏縮縮" }
+            ]
+        }
+    ];
+
+    let userAnswers = {};
+    let currentQuestionIndex = 0;
+
     function startAppJourney() {
         const coverScreen = document.getElementById('screen-cover');
         const tongueScreen = document.getElementById('screen-tongue');
         const enterBtn = document.querySelector('.btn-enter');
 
-        // Step 1: 讓進入按鈕產生輕微被按下的縮放打擊感
         enterBtn.style.transform = 'scale(0.96)';
-
-        // Step 2: 延遲 120 毫秒（等待按鈕動效完結），正式啟動大轉場
         setTimeout(() => {
-            // 讓【歡迎封面】往上滑動並淡出
-            coverScreen.classList.add('cover-exit-style');
-
-            // 讓【舌診畫面】移除初始隱藏狀態，切換為「活躍登場狀態」
-            tongueScreen.classList.remove('tongue-init-style');
-            tongueScreen.classList.add('tongue-active-style');
+            coverScreen.classList.add('hidden');
+            tongueScreen.classList.remove('hidden');
         }, 120);
     }
 
-    /**
-     * 邏輯 2：間接驅動 HTML 隱藏的檔案選擇器（相機）
-     */
     function openNativeCamera() {
         document.getElementById('hidden-file-input').click();
     }
 
-    /**
-     * 邏輯 3：前端標準化數據校正與影像預覽
-     */
     function processStandardizedPhoto(event) {
         const targetFile = event.target.files[0];
         if (!targetFile) return;
@@ -298,38 +655,265 @@
             const previewComponent = document.getElementById('camera-preview');
             const visualPlaceholder = document.getElementById('placeholder-text');
             
-            // 1. 渲染照片
             previewComponent.src = e.target.result;
             previewComponent.style.display = 'block';
             visualPlaceholder.style.display = 'none';
 
-            // 2. ⚡ 模擬前端「計算機視覺演算法」檢驗通過，點亮三個綠色指示燈
             document.getElementById('dot-light').className = 'status-dot status-ok';
             document.getElementById('txt-light').innerText = '光源：充足合格';
-
             document.getElementById('dot-shadow').className = 'status-dot status-ok';
             document.getElementById('txt-shadow').innerText = '陰影：無干擾';
-
             document.getElementById('dot-posture').className = 'status-dot status-ok';
             document.getElementById('txt-posture').innerText = '姿態：對齊精確';
 
-            // 3. 解鎖 Dify 發送按鈕
             document.getElementById('btn-submit-dify').disabled = false;
         };
         imageReader.readAsDataURL(targetFile);
     }
 
-    /**
-     * 邏輯 4：串接您提供的 Dify 工作流大腦 API 接口
-     */
-    function dispatchDataToDifyWorkflow() {
-        alert(
-            "【Dify 工作流對接廣播】\n\n" +
-            "前端標準化採集封包完畢！系統即將調用您提供的 Dify API 進行核心判讀：\n" +
-            "1. 提取客觀舌象（舌色、苔色、厚薄度、濕潤度數據）\n" +
-            "2. 結合下一關的情緒主觀量表進行綜合權重比對\n" +
-            "3. 輸出調理報告，並將使用者引導至祐漢、黑沙環或下環等十三主題實體舊區據點！"
-        );
+    function navigateToSurveyScreen() {
+        document.getElementById('screen-tongue').classList.add('hidden');
+        document.getElementById('screen-emotion').classList.remove('hidden');
+        renderQuestion();
+    }
+</script>
+
+<script>
+    function renderQuestion() {
+        const qData = surveyDatabase[currentQuestionIndex];
+        
+        document.getElementById('lbl-survey-progress').innerText = `問題 ${currentQuestionIndex + 1} / 14`;
+        document.getElementById('lbl-survey-category').innerText = qData.category;
+        
+        const progressPercentage = ((currentQuestionIndex + 1) / 14) * 100;
+        document.getElementById('bar-survey-fill').style.width = `${progressPercentage}%`;
+
+        document.getElementById('lbl-question-text').innerText = qData.text;
+
+        const listPanel = document.getElementById('panel-option-list');
+        listPanel.innerHTML = "";
+
+        qData.options.forEach(opt => {
+            const optItem = document.createElement('div');
+            optItem.className = 'option-item';
+            
+            if (userAnswers[currentQuestionIndex] === opt.val) {
+                optItem.classList.add('selected');
+            }
+
+            optItem.onclick = () => selectOption(opt.val);
+
+            optItem.innerHTML = `
+                <span class="option-letter">(${opt.val})</span>
+                <span>${opt.text}</span>
+            `;
+            listPanel.appendChild(optItem);
+        });
+
+        document.getElementById('btn-survey-prev').disabled = (currentQuestionIndex === 0);
+        
+        const hasSelected = userAnswers[currentQuestionIndex] !== undefined;
+        const nextBtn = document.getElementById('btn-survey-next');
+        nextBtn.disabled = !hasSelected;
+
+        if (currentQuestionIndex === 13) {
+            nextBtn.innerText = "送出進行 AI 綜合辨證";
+        } else {
+            nextBtn.innerText = "下一步";
+        }
+    }
+
+    function selectOption(val) {
+        userAnswers[currentQuestionIndex] = val;
+        renderQuestion();
+
+        setTimeout(() => {
+            if (currentQuestionIndex < 13) {
+                currentQuestionIndex++;
+                renderQuestion();
+            }
+        }, 300);
+    }
+
+    function prevQuestion() {
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            renderQuestion();
+        }
+    }
+
+    function nextQuestion() {
+        if (currentQuestionIndex < 13) {
+            currentQuestionIndex++;
+            renderQuestion();
+        } else {
+            triggerDifyAndLocalInference();
+        }
+    }
+</script>
+
+<script>
+    const locationsDatabase = {
+        "濕": [
+            { name: "祐漢街市熟食中心", desc: "傳統民生市集。陳列驅濕湯料包，現場由註冊中醫提供防濕、氣候體質防護科普[cite: 2]." },
+            { name: "黑沙海灘生態徑", desc: "寬闊戶外高地，海風充足，藉助大自然「陽氣」驅散體內的黏膩寒濕." }
+        ],
+        "暑": [
+            { name: "白鴿巢公園（賈梅士洞）", desc: "古樹濃蔭，石洞陰涼。避開強烈紫外線，現場設有解暑茶飲與主題文創." },
+            { name: "下環街市熟食中心", desc: "人流往來熱鬧，提供嶺南清暑涼茶文化科普與在地老店導覽[cite: 2]." }
+        ],
+        "燥": [
+            { name: "加思欄花園（粉紅堡壘與噴泉）", desc: "綠化充足，伴有微型噴泉。透過環境視覺增加心理濕度，緩解咽喉秋燥." },
+            { name: "何東圖書館", desc: "安靜雅致，中庭設有開闊玻璃長廊，一邊閱讀一邊靜潤身心." }
+        ],
+        "寒": [
+            { name: "關前街舊城坊", desc: "澳門狹窄避風的舊街，富有人情味與熱氣騰騰的傳統小吃，對沖體內凝滯寒邪." },
+            { name: "果欄街手藝鋪", desc: "傳統木雕與香薰鋪林立，氣味溫暖，適合手腳冰冷者緩緩步行調氣." }
+        ],
+        "風": [
+            { name: "松山防空洞與隧道", desc: "避開松山頂強風，在溫和流通的防空洞隧道內，學習避風防感冒的起居指引." }
+        ],
+        "火": [
+            { name: "西望洋山（主教山頂段）", desc: "俯瞰內港及西灣湖，遠離鬧市，視覺上利用開闊藍色水面平息心火." }
+        ],
+        "喜": [
+            { name: "望德堂區（婆仔屋）", desc: "文創氣息濃厚，黃牆葡式老宅。步調緩慢安詳，讓亢奮過度的精神回歸溫和平靜." }
+        ],
+        "怒": [
+            { name: "漁人碼頭海濱長廊", desc: "視野完全開闊，無高樓遮擋。在大步快走中促進「肝氣」疏泄與散發." }
+        ],
+        "憂": [
+            { name: "營地大街（老字號街）", desc: "澳門最古老街道之一。充滿市井人煙與店鋪喧鬧，帶動低落的情緒重新與人間相連." }
+        ],
+        "思": [
+            { name: "路環市區（十月初五馬路）", desc: "步調緩慢，面臨開闊十字門水道。單純的環海漫步能有效中斷反覆的思慮內耗." }
+        ],
+        "悲": [
+            { name: "大砲台公園頂層", desc: "登高望遠。在歷史古砲旁張開雙臂深呼吸，提振胸中陽氣，驅散自憐悲傷." }
+        ],
+        "驚": [
+            { name: "盧廉若公園（蘇州園林）", desc: "封閉且極富秩序感的江南園林。九曲橋引導漫步者專注腳下步伐，平定驚慌." }
+        ],
+        "恐": [
+            { name: "澳門博物館", desc: "展示澳門數百年來多元文化交融、前人抗擊疫情與重建家園的歷史，提供內心定力." }
+        ]
+    };
+
+    const herbalMedicineDatabase = {
+        "喜": { name: "麥冬合歡花茶", tag: "養陰安神，平抑心火", shop: "下環街傳統參茸藥行", desc: "合歡花解鬱安神，麥冬養陰。適合神情過度亢奮、虛火上升者調理。" },
+        "怒": { name: "菊花薄荷茶", tag: "疏風散熱，平肝清熱", shop: "大聲公涼茶（大三巴牌坊旁）", desc: "薄荷清利頭目，菊花疏散肝熱。能有效改善因易怒、氣逆致使之偏頭痛及口苦[cite: 2]." },
+        "悲": { name: "百合蓮子紅棗湯", tag: "補氣養血，寧心安神", shop: "祐漢舊區老牌甜品舖", desc: "百合潤肺止咳，紅棗補中益氣。能提升悲傷過度引起的氣短乏力，振奮精神。" },
+        "思": { name: "陳皮茯苓山楂茶", tag: "健脾消食，化濕和中", shop: "百老匯涼茶鋪", desc: "陳皮理氣健脾，茯苓淡滲利濕。針對過度思慮引致的脾胃虛弱、食慾不振有良好功效。" },
+        "憂": { name: "玫瑰佛手桔梗茶", tag: "疏肝解鬱，行氣寬中", shop: "營地大街傳統涼茶檔", desc: "玫瑰花行氣解鬱，佛手疏肝理氣。有效改善憂鬱、悶悶不樂引致的胸肋悶脹感。" },
+        "驚": { name: "酸棗仁百合茯神湯", tag: "寧心定驚，交通心腎", shop: "同安街傳統參茸老藥房", desc: "酸棗仁為養心安神之要藥，茯神能定驚安神。針對受驚過度、心悸不寧有顯著調理效果。" },
+        "恐": { name: "桂圓杞子桂皮茶", tag: "溫補脾腎，引火歸元", shop: "下環街市熟食中心養生檔[cite: 2]", desc: "桂圓肉益心脾，杞子滋補肝腎。溫補下焦，幫助緩解因內心驚恐不安導致的畏寒手足冷。" }
+    };
+
+    function triggerDifyAndLocalInference() {
+        document.getElementById('modal-loader').style.display = 'block';
+        document.getElementById('modal-content').style.display = 'none';
+        const modal = document.getElementById('custom-modal');
+        modal.classList.add('active');
+
+        setTimeout(() => {
+            let counts = { A:0, B:0, C:0, D:0, E:0, F:0, G:0 };
+            for (let index in userAnswers) {
+                let ans = userAnswers[index];
+                if (counts[ans] !== undefined) counts[ans]++;
+            }
+
+            let maxKey = 'D';
+            let maxVal = -1;
+            for (let key in counts) {
+                if (counts[key] > maxVal) {
+                    maxVal = counts[key];
+                    maxKey = key;
+                }
+            }
+
+            const emotionMapping = {
+                'A': { name: "喜", status: "喜樂過度，心火亢盛" },
+                'B': { name: "怒", status: "肝氣鬱結，易怒氣逆" },
+                'C': { name: "悲", status: "悲憂傷肺，意志消沉" },
+                'D': { name: "思", status: "思慮過度，脾胃氣結" },
+                'E': { name: "憂", status: "憂思鬱結，氣機阻滯" },
+                'F': { name: "驚", status: "驚慌失措，心神不寧" },
+                'G': { name: "恐", status: "恐懼傷腎，下焦不固" }
+            };
+
+            const userSevenEmotion = emotionMapping[maxKey];
+
+            const simulatedHumidity = 88;
+            let inferredSixEvil = "濕";
+            let evilDescription = "今日澳門受強濕熱氣候影響，相對濕度高達 88%，且您的舌象邊緣略帶齒痕、苔白偏厚，此為標準之『外感濕邪、水濕內停』之兆保護脾胃防濕尤為關鍵。";
+
+            document.getElementById('res-six-evils').innerText = inferredSixEvil + "邪偏重";
+            document.getElementById('res-seven-moods').innerText = userSevenEmotion.name + "志過度";
+            document.getElementById('res-diagnosis-desc').innerText = `【雙維度綜合診斷】: ${evilDescription} 結合七情測評，您目前處於『${userSevenEmotion.status}』狀態。中醫講「天人合一」，內傷與外感共振。`;
+
+            const dietPrescription = herbalMedicineDatabase[userSevenEmotion.name];
+            document.getElementById('res-diet-name').innerText = `🍲 推薦調養茶飲：${dietPrescription.name}`;
+            document.getElementById('res-diet-desc').innerText = `【配方功效】: ${dietPrescription.tag}。${dietPrescription.desc}`;
+            document.getElementById('res-diet-shop').innerText = dietPrescription.shop;
+
+            const timelineContainer = document.getElementById('res-route-timeline');
+            timelineContainer.innerHTML = "";
+
+            const spotsList = [];
+            if (locationsDatabase[inferredSixEvil]) {
+                spotsList.push(locationsDatabase[inferredSixEvil][0]);
+            }
+            if (locationsDatabase[userSevenEmotion.name]) {
+                spotsList.push(locationsDatabase[userSevenEmotion.name][0]);
+            }
+
+            spotsList.forEach((spot, idx) => {
+                const node = document.createElement('div');
+                node.className = 'route-node';
+                node.innerHTML = `
+                    <div class="route-node-title">${idx + 1}. ${spot.name}</div>
+                    <div class="route-node-desc">${spot.desc}</div>
+                `;
+                timelineContainer.appendChild(node);
+            });
+
+            modal.classList.remove('active');
+            document.getElementById('screen-emotion').classList.add('hidden');
+            document.getElementById('screen-result').classList.remove('hidden');
+
+        }, 2000);
+    }
+
+    function resetApp() {
+        userAnswers = {};
+        currentQuestionIndex = 0;
+        document.getElementById('btn-submit-dify').disabled = true;
+        document.getElementById('camera-preview').style.display = 'none';
+        document.getElementById('placeholder-text').style.display = 'block';
+        
+        document.getElementById('dot-light').className = 'status-dot';
+        document.getElementById('txt-light').innerText = '光源檢測';
+        document.getElementById('dot-shadow').className = 'status-dot';
+        document.getElementById('txt-shadow').innerText = '陰影警示';
+        document.getElementById('dot-posture').className = 'status-dot';
+        document.getElementById('txt-posture').innerText = '姿態校正';
+
+        document.getElementById('screen-result').classList.add('hidden');
+        document.getElementById('screen-cover').classList.remove('hidden');
+    }
+</script>
+
+<script>
+    function openModal(title, text) {
+        document.getElementById('modal-loader').style.display = 'none';
+        document.getElementById('modal-content').style.display = 'block';
+        document.getElementById('modal-title').innerText = title;
+        document.getElementById('modal-body').innerHTML = text;
+        document.getElementById('custom-modal').classList.add('active');
+    }
+
+    function closeModal() {
+        document.getElementById('custom-modal').classList.remove('active');
     }
 </script>
 
