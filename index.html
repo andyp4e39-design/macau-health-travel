@@ -167,8 +167,8 @@
                     <i class="fa-solid fa-arrow-right text-xs"></i>
                 </button>
                 <span class="text-[10px] text-neutral-500 text-center block">
-                    <span class="lang-zh">© 2026 澳門聯校科展「澳康遊」研發小組 ver 3.0</span>
-                    <span class="lang-en">© 2026 Macau Joint School Science Exhibition ver 3.0</span>
+                    <span class="lang-zh">© 2026 澳門聯校科展「澳康遊」研發小組 ver 3.1</span>
+                    <span class="lang-en">© 2026 Macau Joint School Science Exhibition ver 3.1</span>
                 </span>
             </div>
         </div>
@@ -554,7 +554,7 @@
                 </div>
 
                 <div class="p-3 rounded-xl bg-amber-50/50 border border-amber-200/60 text-[10px] text-amber-900/80 leading-relaxed mb-4">
-                    <span class="lang-zh">🚫 <strong>友善社區提示：</strong> 本路線穿行祐漢、下環等民生住宅舊區，夜間 20:00 後部分站點諮詢關閉。請漫步者降低音量，保障社區居民安寧。</span>
+                    <span class="lang-zh">🚫 <strong>友善社區提示：</strong> 本路線穿行祐漢, 下環等民生住宅舊區，夜間 20:00 後部分站點諮詢關閉。請漫步者降低音量，保障社區居民安寧。</span>
                     <span class="lang-en">🚫 <strong>Community Notice:</strong> This route passes through old residential areas. Please keep noise down after 20:00.</span>
                 </div>
 
@@ -777,17 +777,48 @@
 
         runExhibitionScanningAnimation();
 
-        const tougStat = await analyzeTongueWithDify(pendingTongueFile, pendingTongueBase64);
+        const rawResult = await analyzeTongueWithDify(pendingTongueFile, pendingTongueBase64);
+        const cleanStat = extractJsonValue(rawResult);
 
-        if (tougStat) {
-            statusTxt.innerText = currentLang === 'zh' ? `Dify AI 分析完成: 【${tougStat}】` : `AI Analysis Complete: ${tougStat}`;
+        if (cleanStat) {
+            statusTxt.innerText = currentLang === 'zh' ? `Dify AI 分析完成: ${cleanStat}` : `AI Analysis Complete: ${cleanStat}`;
             badge.className = "mb-3 p-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-[10px] text-center font-bold flex items-center justify-center gap-2";
-            applyApiResultToProfile(tougStat);
+            applyApiResultToProfile(cleanStat);
         } else {
             statusTxt.innerText = currentLang === 'zh' ? "已採用靈敏備用演算法推導體質" : "Fallback algorithm activated";
             badge.className = "mb-3 p-2 rounded-xl bg-neutral-100 border border-neutral-300 text-neutral-600 text-[10px] text-center font-bold flex items-center justify-center gap-2";
-            applyApiResultToProfile("舌苔特徵: 標準模版");
+            applyApiResultToProfile("健康淡紅");
         }
+    }
+
+    // 專門解析 Dify 回傳結果（自動提取 JSON 內的 value）
+    function extractJsonValue(rawText) {
+        if (!rawText) return null;
+        let text = String(rawText).trim();
+        
+        // 如果包含 markdown json 標籤，先清理
+        text = text.replace(/```json/gi, '').replace(/```/g, '').trim();
+
+        try {
+            const parsed = JSON.parse(text);
+            if (typeof parsed === 'object' && parsed !== null) {
+                // 優先找常用的幾個 key
+                const keys = ['toug_stat', 'roug_stat', 'result', 'status', 'diagnosis'];
+                for (let k of keys) {
+                    if (parsed[k]) return String(parsed[k]).trim();
+                }
+                // 若找不到特定 key，抓取第一個 value
+                const values = Object.values(parsed);
+                if (values.length > 0) return String(values[0]).trim();
+            }
+        } catch (e) {
+            // 如果不是純 JSON，嘗試用正則表達式提取雙引號內的內容
+            const match = text.match(/"(?:toug_stat|roug_stat|result|status)"\s*:\s*"([^"]+)"/i);
+            if (match && match[1]) {
+                return match[1].trim();
+            }
+        }
+        return text;
     }
 
     async function analyzeTongueWithDify(file, base64Data) {
@@ -1623,7 +1654,6 @@
 
         document.getElementById('diag-six-evils').innerText = data.evil;
         
-        // 恢復完整的七情偏頗文本描述
         const emotionObj = EMOTION_TEXT_MAP[dominantEmotion] || EMOTION_TEXT_MAP["憂"];
         const emotionTextFull = (emotionObj[currentLang] || emotionObj.zh) + ` (${maxScore} pt)`;
         document.getElementById('diag-seven-emotions').innerText = emotionTextFull;
