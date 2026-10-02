@@ -135,7 +135,7 @@
                     <span>開啟身心調養之旅</span>
                     <i class="fa-solid fa-arrow-right text-xs"></i>
                 </button>
-                <span class="text-[10px] text-neutral-500 text-center block">© 2026 澳門聯校科展「澳康遊」研發小組 Ver 2.1</span>
+                <span class="text-[10px] text-neutral-500 text-center block">© 2026 澳門聯校科展「澳康遊」研發小組 ver 2.4</span>
             </div>
         </div>
 
@@ -165,7 +165,7 @@
                 </div>
 
                 <!-- 相機掃描框容器 (支援內嵌攝影機) -->
-                <div class="relative w-full h-64 bg-[#eef2ef] rounded-2xl border border-[var(--border-color)] flex items-center justify-center overflow-hidden shadow-inner mb-4">
+                <div class="relative w-full h-64 bg-[#eef2ef] rounded-2xl border border-[var(--border-color)] flex items-center justify-center overflow-hidden shadow-inner mb-3">
                     <!-- 舌體對齊虛線框 -->
                     <div class="absolute w-36 h-48 border-2 border-dashed border-[var(--gold-accent)]/80 rounded-[50%_50%_42%_42%] z-20 flex items-center justify-center pointer-events-none">
                         <span class="text-[9px] text-[var(--gold-accent)] font-bold tracking-wider bg-white/90 px-2 py-0.5 rounded border border-[var(--gold-accent)]/40 absolute bottom-4 shadow-sm">請對齊舌體區域</span>
@@ -198,6 +198,12 @@
                     </button>
                 </div>
 
+                <!-- 確定分析按鈕 (照片拍攝/上傳後顯示) -->
+                <button id="btn-confirm-analyze" onclick="confirmAndAnalyzeTongue()" class="hidden w-full py-3 rounded-xl bg-gradient-to-r from-emerald-700 to-teal-800 hover:from-emerald-800 hover:to-teal-900 text-white font-bold text-xs shadow-md active:scale-[0.98] transition-all mb-3 flex items-center justify-center gap-2 border border-emerald-600/30">
+                    <i class="fa-solid fa-magnifying-glass font-bold"></i>
+                    <span>確定分析此舌照 (開始 AI 診斷)</span>
+                </button>
+
                 <!-- 辨識進度與狀態提示 -->
                 <div id="api-status-badge" class="hidden mb-3 p-2 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-[10px] text-center font-bold flex items-center justify-center gap-2">
                     <i class="fa-solid fa-spinner animate-spin"></i>
@@ -224,7 +230,7 @@
             <!-- 操作區 -->
             <div class="mt-2">
                 <input type="file" id="tongue-file-input" accept="image/*" class="hidden" onchange="handleTongueImageUpload(event)">
-                <button onclick="triggerFileSelect()" class="w-full py-3.5 rounded-xl border border-emerald-600/20 bg-emerald-50 text-emerald-800 font-bold text-xs flex items-center justify-center gap-2 hover:bg-emerald-100/50 transition-all mb-2 active:scale-[0.98] shadow-sm">
+                <button onclick="triggerFileSelect()" class="w-full py-3 rounded-xl border border-emerald-600/20 bg-emerald-50 text-emerald-800 font-bold text-xs flex items-center justify-center gap-2 hover:bg-emerald-100/50 transition-all mb-2 active:scale-[0.98] shadow-sm">
                     <i class="fa-solid fa-cloud-arrow-up"></i>
                     <span>選擇本地舌照檔案上傳</span>
                 </button>
@@ -448,7 +454,11 @@
     };
 
     let currentProfileData = null;
-    let cameraStream = null; // 儲存當前內嵌攝影機串流
+    let cameraStream = null;
+
+    // 暫存準備分析的照片檔案與 Base64 數據（防止未確定前調用 API）
+    let pendingTongueFile = null;
+    let pendingTongueBase64 = "";
 
     /**
      * 關閉並清理內嵌攝影機串流
@@ -480,7 +490,10 @@
             const imgPreview = document.getElementById('tongue-img-preview');
             const snapBtn = document.getElementById('btn-snap-photo');
 
-            // 優先設定為前置鏡頭 (user)，方便拍照對齊
+            // 重置狀態
+            document.getElementById('btn-confirm-analyze').classList.add('hidden');
+            document.getElementById('api-status-badge').classList.add('hidden');
+
             const constraints = {
                 video: {
                     facingMode: { ideal: "user" },
@@ -506,13 +519,12 @@
     }
 
     /**
-     * 拍攝內嵌攝影機畫面並發送給 Dify AI 進行分析
+     * 拍攝內嵌攝影機畫面（僅讀取預覽，不觸發 API）
      */
     async function captureEmbeddedPhoto() {
         const video = document.getElementById('tongue-video');
         if (!video || video.videoWidth === 0) return;
 
-        // 建立 Canvas 將視訊畫面繪製為圖片
         const canvas = document.createElement('canvas');
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
@@ -520,6 +532,7 @@
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
         const base64Data = canvas.toDataURL('image/jpeg', 0.92);
+        pendingTongueBase64 = base64Data;
         selectedImageBase64 = base64Data;
 
         // 呈現拍攝照片並關閉攝影機串流
@@ -529,75 +542,89 @@
 
         stopCameraStream();
 
-        // 轉為 Blob 檔發送 Dify 分析
-        canvas.toBlob(async (blob) => {
+        // 轉為 File 物件暫存，等待使用者點擊【確定分析】
+        canvas.toBlob((blob) => {
             if (!blob) return;
-            const file = new File([blob], `tongue_${Date.now()}.jpg`, { type: 'image/jpeg' });
-
-            const badge = document.getElementById('api-status-badge');
-            const statusTxt = document.getElementById('api-status-text');
-            badge.classList.remove('hidden');
-            badge.className = "mb-3 p-2 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-[10px] text-center font-bold flex items-center justify-center gap-2";
-            statusTxt.innerText = "正在將舌照發送至 Dify AI 進行視覺診斷...";
-
-            runExhibitionScanningAnimation();
-
-            // 呼叫 Dify API 進行舌診
-            const tougStat = await analyzeTongueWithDify(file, base64Data);
-
-            if (tougStat) {
-                statusTxt.innerText = `Dify AI 分析完成: 【${tougStat}】`;
-                badge.className = "mb-3 p-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-[10px] text-center font-bold flex items-center justify-center gap-2";
-                applyApiResultToProfile(tougStat);
-            } else {
-                statusTxt.innerText = "Dify 網路響應超時或格式異常，已採用靈敏備用演算法推導體質";
-                badge.className = "mb-3 p-2 rounded-xl bg-neutral-100 border border-neutral-300 text-neutral-600 text-[10px] text-center font-bold flex items-center justify-center gap-2";
-                applyApiResultToProfile("舌苔特徵: 寒濕齒痕");
-            }
+            pendingTongueFile = new File([blob], `tongue_${Date.now()}.jpg`, { type: 'image/jpeg' });
+            
+            // 顯示【確定分析】按鈕
+            const confirmBtn = document.getElementById('btn-confirm-analyze');
+            confirmBtn.classList.remove('hidden');
+            
+            // 重置並停用下一步按鈕，直到完成分析
+            const nextBtn = document.getElementById('btn-to-survey');
+            nextBtn.disabled = true;
+            nextBtn.className = "w-full py-3.5 rounded-xl bg-neutral-200 text-neutral-400 border border-neutral-300 font-bold text-sm flex items-center justify-center gap-1 transition-all active:scale-[0.98]";
         }, 'image/jpeg', 0.92);
     }
 
     /**
-     * 上傳檔案時的主處理函數
+     * 上傳檔案處理函數（僅讀取預覽，不觸發 API）
      */
-    async function handleTongueImageUpload(event) {
-        stopCameraStream(); // 確保攝影機已關閉
+    function handleTongueImageUpload(event) {
+        stopCameraStream();
         const file = event.target.files[0];
         if (!file) return;
 
+        pendingTongueFile = file;
+
         const reader = new FileReader();
-        reader.onload = async function(e) {
+        reader.onload = function(e) {
+            pendingTongueBase64 = e.target.result;
             selectedImageBase64 = e.target.result;
 
             const imgPreview = document.getElementById('tongue-img-preview');
             imgPreview.src = selectedImageBase64;
             imgPreview.classList.remove('hidden');
             document.getElementById('tongue-placeholder').classList.add('hidden');
-            
-            const badge = document.getElementById('api-status-badge');
-            const statusTxt = document.getElementById('api-status-text');
-            badge.classList.remove('hidden');
-            badge.className = "mb-3 p-2 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-[10px] text-center font-bold flex items-center justify-center gap-2";
-            statusTxt.innerText = "正在將舌照發送至 Dify AI 進行視覺診斷...";
 
-            runExhibitionScanningAnimation();
+            // 顯示【確定分析】按鈕，隱藏舊的 API 狀態標籤
+            document.getElementById('btn-confirm-analyze').classList.remove('hidden');
+            document.getElementById('api-status-badge').classList.add('hidden');
 
-            const tougStat = await analyzeTongueWithDify(file, selectedImageBase64);
-
-            if (tougStat) {
-                statusTxt.innerText = `Dify AI 分析完成: 【${tougStat}】`;
-                badge.className = "mb-3 p-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-[10px] text-center font-bold flex items-center justify-center gap-2";
-                applyApiResultToProfile(tougStat);
-            } else {
-                statusTxt.innerText = "Dify 網路響應超時或格式異常，已採用靈敏備用演算法推導體質";
-                badge.className = "mb-3 p-2 rounded-xl bg-neutral-100 border border-neutral-300 text-neutral-600 text-[10px] text-center font-bold flex items-center justify-center gap-2";
-                
-                const mockKeywords = ["熱", "紅", "齒痕", "黃苔", "薄白"];
-                const rndKey = mockKeywords[file.size % mockKeywords.length];
-                applyApiResultToProfile(`舌苔特徵: ${rndKey}`);
-            }
+            // 停用下一步按鈕，直到完成分析
+            const nextBtn = document.getElementById('btn-to-survey');
+            nextBtn.disabled = true;
+            nextBtn.className = "w-full py-3.5 rounded-xl bg-neutral-200 text-neutral-400 border border-neutral-300 font-bold text-sm flex items-center justify-center gap-1 transition-all active:scale-[0.98]";
         };
         reader.readAsDataURL(file);
+    }
+
+    /**
+     * 使用者點擊【確定分析此舌照】後，才正式向 Dify API 發送請求
+     */
+    async function confirmAndAnalyzeTongue() {
+        if (!pendingTongueFile && !pendingTongueBase64) {
+            alert("請先拍攝或上傳舌照。");
+            return;
+        }
+
+        const confirmBtn = document.getElementById('btn-confirm-analyze');
+        confirmBtn.classList.add('hidden'); // 點擊後隱藏確認按鈕
+
+        const badge = document.getElementById('api-status-badge');
+        const statusTxt = document.getElementById('api-status-text');
+        badge.classList.remove('hidden');
+        badge.className = "mb-3 p-2 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-[10px] text-center font-bold flex items-center justify-center gap-2";
+        statusTxt.innerText = "正在將舌照發送至 Dify AI 進行視覺診斷...";
+
+        runExhibitionScanningAnimation();
+
+        // 正式呼叫 Dify API
+        const tougStat = await analyzeTongueWithDify(pendingTongueFile, pendingTongueBase64);
+
+        if (tougStat) {
+            statusTxt.innerText = `Dify AI 分析完成: 【${tougStat}】`;
+            badge.className = "mb-3 p-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-[10px] text-center font-bold flex items-center justify-center gap-2";
+            applyApiResultToProfile(tougStat);
+        } else {
+            statusTxt.innerText = "Dify 網路響應超時或格式異常，已採用靈敏備用演算法推導體質";
+            badge.className = "mb-3 p-2 rounded-xl bg-neutral-100 border border-neutral-300 text-neutral-600 text-[10px] text-center font-bold flex items-center justify-center gap-2";
+            
+            const mockKeywords = ["熱", "紅", "齒痕", "黃苔", "薄白"];
+            const rndKey = mockKeywords[(pendingTongueFile ? pendingTongueFile.size : 100) % mockKeywords.length];
+            applyApiResultToProfile(`舌苔特徵: ${rndKey}`);
+        }
     }
 
     /**
@@ -608,28 +635,30 @@
             console.log("【Dify API】開始準備向 Dify Workflow 發送請求...");
             let uploadFileId = null;
 
-            try {
-                const formData = new FormData();
-                formData.append('file', file);
-                formData.append('user', DIFY_TONGUE_CONFIG.user);
+            if (file) {
+                try {
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    formData.append('user', DIFY_TONGUE_CONFIG.user);
 
-                const uploadRes = await fetch(`${DIFY_TONGUE_CONFIG.endpoint}/files/upload`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${DIFY_TONGUE_CONFIG.apiKey}`
-                    },
-                    body: formData
-                });
+                    const uploadRes = await fetch(`${DIFY_TONGUE_CONFIG.endpoint}/files/upload`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${DIFY_TONGUE_CONFIG.apiKey}`
+                        },
+                        body: formData
+                    });
 
-                if (uploadRes.ok) {
-                    const uploadData = await uploadRes.json();
-                    uploadFileId = uploadData.id;
-                    console.log("【Dify API】圖片上傳成功，File ID:", uploadFileId);
-                } else {
-                    console.warn("【Dify API】圖片上傳返回狀態非 200:", uploadRes.status);
+                    if (uploadRes.ok) {
+                        const uploadData = await uploadRes.json();
+                        uploadFileId = uploadData.id;
+                        console.log("【Dify API】圖片上傳成功，File ID:", uploadFileId);
+                    } else {
+                        console.warn("【Dify API】圖片上傳返回狀態非 200:", uploadRes.status);
+                    }
+                } catch (e) {
+                    console.warn("【Dify API】圖片上傳拋出異常", e);
                 }
-            } catch (e) {
-                console.warn("【Dify API】圖片上傳拋出異常", e);
             }
 
             const fileObj = uploadFileId ? {
@@ -1043,7 +1072,7 @@
     let isPlayingAudio = false;
 
     function navigateToScreen(targetScreenId) {
-        stopCameraStream(); // 切換畫面時自動清理相機串流
+        stopCameraStream();
         const screens = ["screen-cover", "screen-tongue", "screen-survey", "screen-result"];
         screens.forEach(id => {
             const el = document.getElementById(id);
@@ -1079,6 +1108,12 @@
     function selectTonguePreset(presetKey) {
         stopCameraStream();
         selectedPreset = presetKey;
+        pendingTongueFile = null;
+        pendingTongueBase64 = "";
+        
+        document.getElementById('btn-confirm-analyze').classList.add('hidden');
+        document.getElementById('api-status-badge').classList.add('hidden');
+
         const data = HEALTH_PRESETS[presetKey];
         currentProfileData = Object.assign({}, data, { nodes: [...data.nodes] });
         
@@ -1458,10 +1493,13 @@
 
         selectedPreset = null;
         selectedImageBase64 = "";
+        pendingTongueFile = null;
+        pendingTongueBase64 = "";
         currentProfileData = null;
         surveyAnswers = {};
         currentQuestionIndex = 0;
 
+        document.getElementById('btn-confirm-analyze').classList.add('hidden');
         document.getElementById('tongue-img-preview').classList.add('hidden');
         document.getElementById('tongue-placeholder').classList.remove('hidden');
         document.getElementById('btn-to-survey').disabled = true;
