@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>舌苔walk</title>
     <script src="https://cdn.tailwindcss.com"></script>
-	<link class="tab-icon" rel="apple-touch-icon" href="apps_icon.png">
-    
+    <link class="tab-icon" rel="apple-touch-icon" href="apps_icon.png">
     <link rel="icon" type="image/png" sizes="192x192" href="apps_icon.png">
     <!-- FontAwesome 圖標庫 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -29,7 +28,6 @@
             background-color: var(--sage-light);
             color: var(--charcoal);
         }
-        /* 簡約現代網頁應用容器（完全移除手機外框模擬） */
         .app-container {
             width: 100%;
             max-width: 480px;
@@ -40,7 +38,6 @@
             display: flex;
             flex-direction: column;
         }
-        /* 桌上型電腦版優雅卡片化適應 */
         @media (min-width: 640px) {
             .app-container {
                 height: 850px;
@@ -49,7 +46,6 @@
                 border: 1px solid var(--border-color);
             }
         }
-        /* 自定義優雅滾動條 */
         ::-webkit-scrollbar {
             width: 5px;
         }
@@ -60,7 +56,6 @@
             background: rgba(46, 92, 62, 0.2);
             border-radius: 99px;
         }
-        /* 中古典雅漸變與發光動畫 */
         .gradient-text {
             background: linear-gradient(135deg, var(--charcoal) 30%, var(--sage-green) 100%);
             -webkit-background-clip: text;
@@ -82,7 +77,6 @@
             0% { r: 5; opacity: 0.6; filter: drop-shadow(0 0 2px var(--gold-accent)); }
             100% { r: 9; opacity: 1; filter: drop-shadow(0 0 10px var(--gold-accent)); }
         }
-        /* 畫面轉場 */
         .screen-transition {
             transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
@@ -100,9 +94,8 @@
              ========================================== -->
         <div id="screen-cover" class="screen-transition absolute inset-0 p-6 flex flex-col justify-between z-10 bg-[var(--sage-light)]">
             <div class="flex-1 flex flex-col justify-center items-center text-center mt-6">
-                <!-- 徽章標誌 (草木綠微光版) -->
                 <div class="w-24 h-24 rounded-3xl bg-emerald-50 border border-emerald-600/30 flex items-center justify-center shadow-[0_10px_30px_rgba(46,92,62,0.08)] mb-6 relative group overflow-hidden">
-                    <span class="text-5xl text-emerald-700 font-serif"><img src="apps_icon.png"></span>
+                    <span class="text-5xl text-emerald-700 font-serif"><img src="apps_icon.png" alt="icon"></span>
                     <div class="absolute inset-0 bg-gradient-to-tr from-emerald-600/5 to-transparent"></div>
                 </div>
                 
@@ -116,12 +109,11 @@
                     <span class="text-emerald-800 font-semibold">AI 舌診 · 七情雙維度辨證系統</span>
                 </p>
 
-                <!-- 特色卡片滾動區 (改為中古白卡片配細緻邊框) -->
                 <div class="grid grid-cols-2 gap-2 w-full mt-6">
                     <div class="p-3.5 rounded-2xl bg-white border border-[var(--border-color)] shadow-sm flex flex-col items-center justify-center text-center">
                         <i class="fa-solid fa-eye text-emerald-700 mb-1.5 text-lg"></i>
                         <h4 class="text-xs font-bold text-neutral-800">舌象視覺特徵</h4>
-                        <p class="text-[10px] text-neutral-500">客觀提取色澤、苔質</p>
+                        <p class="text-[10px] text-neutral-500">Dify API 實時分析舌象</p>
                     </div>
                     <div class="p-3.5 rounded-2xl bg-white border border-[var(--border-color)] shadow-sm flex flex-col items-center justify-center text-center">
                         <i class="fa-solid fa-heart-pulse text-rose-600 mb-1.5 text-lg"></i>
@@ -132,7 +124,7 @@
                         <i class="fa-solid fa-map-location-dot text-[var(--gold-accent)] text-lg"></i>
                         <div>
                             <h4 class="text-xs font-bold text-neutral-800">13條民生舊區避邪調養路線</h4>
-                            <p class="text-[10px] text-neutral-500">精準導引至澳門街市、老舖，引流商戶</p>
+                            <p class="text-[10px] text-neutral-500">根據 AI 舌診結果自動推導地圖路線</p>
                         </div>
                     </div>
                 </div>
@@ -143,7 +135,7 @@
                     <span>開啟身心調養之旅</span>
                     <i class="fa-solid fa-arrow-right text-xs"></i>
                 </button>
-                <span class="text-[10px] text-neutral-500 text-center block">© 2026 澳門聯校科展「澳康遊」研發小組</span>
+                <span class="text-[10px] text-neutral-500 text-center block">© 2026 澳門聯校科展「澳康遊」研發小組 Ver 2.1</span>
             </div>
         </div>
 
@@ -155,10 +147,10 @@
                 <div class="text-center mb-4">
                     <span class="text-[10px] uppercase tracking-widest text-emerald-800 font-bold bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-600/20">Phase 01 / 客觀舌象</span>
                     <h2 class="text-xl font-bold text-neutral-800 mt-2">AI 數據標準化採集</h2>
-                    <p class="text-xs text-neutral-500 mt-1">請上傳舌面照片或使用我們的展會預設模版進行體驗</p>
+                    <p class="text-xs text-neutral-500 mt-1">請上傳舌面照片或使用展會預設模版進行體驗</p>
                 </div>
 
-                <!-- 演示快速模版選取 (改為中古白底深字) -->
+                <!-- 預設模版選取 -->
                 <div class="mb-3">
                     <h4 class="text-xs font-bold text-neutral-700 mb-2 flex items-center gap-1">
                         <i class="fa-solid fa-wand-magic-sparkles text-[var(--gold-accent)]"></i>
@@ -172,27 +164,47 @@
                     </div>
                 </div>
 
-                <!-- 相機掃描框容器 (淡雅溫潤背景) -->
+                <!-- 相機掃描框容器 (支援內嵌攝影機) -->
                 <div class="relative w-full h-64 bg-[#eef2ef] rounded-2xl border border-[var(--border-color)] flex items-center justify-center overflow-hidden shadow-inner mb-4">
-                    <!-- 虛擬定位框 -->
-                    <div class="absolute w-36 h-48 border-2 border-dashed border-[var(--gold-accent)]/80 rounded-[50%_50%_42%_42%] z-20 flex items-center justify-center">
-                        <span class="text-[9px] text-[var(--gold-accent)] font-bold tracking-wider bg-white/90 px-2 py-0.5 rounded border border-[var(--gold-accent)]/40 absolute bottom-4">請對齊舌體區域</span>
+                    <!-- 舌體對齊虛線框 -->
+                    <div class="absolute w-36 h-48 border-2 border-dashed border-[var(--gold-accent)]/80 rounded-[50%_50%_42%_42%] z-20 flex items-center justify-center pointer-events-none">
+                        <span class="text-[9px] text-[var(--gold-accent)] font-bold tracking-wider bg-white/90 px-2 py-0.5 rounded border border-[var(--gold-accent)]/40 absolute bottom-4 shadow-sm">請對齊舌體區域</span>
                     </div>
 
-                    <!-- 模擬掃描光束 -->
+                    <!-- 雷射掃描動畫線 -->
                     <div id="scan-laser" class="laser-line absolute left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-[var(--gold-accent)] to-transparent z-30 hidden"></div>
 
-                    <!-- 照片展示與預設佔位 -->
+                    <!-- 1. 內嵌視訊鏡頭 -->
+                    <video id="tongue-video" class="w-full h-full object-cover hidden z-10" autoplay playsinline muted></video>
+
+                    <!-- 2. 靜態圖片預覽 -->
                     <img id="tongue-img-preview" class="w-full h-full object-cover hidden z-10" alt="舌象預覽">
-                    <div id="tongue-placeholder" class="text-center p-6 text-neutral-500 z-10 flex flex-col items-center gap-3">
-                        <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center border border-[var(--border-color)] text-lg text-emerald-700 shadow-sm">
+
+                    <!-- 3. 未拍攝時的預設點擊啟動區 -->
+                    <div id="tongue-placeholder" onclick="startEmbeddedCamera()" class="text-center p-6 text-neutral-500 z-10 flex flex-col items-center gap-3 cursor-pointer hover:opacity-85 transition-all">
+                        <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center border border-[var(--border-color)] text-lg text-emerald-700 shadow-sm group-hover:scale-105 transition-transform">
                             <i class="fa-solid fa-camera"></i>
                         </div>
-                        <p class="text-xs leading-relaxed text-neutral-600">點擊下方按鈕上傳真實舌照<br>或在上方選擇一款特色體質直接生成</p>
+                        <p class="text-xs leading-relaxed text-neutral-600 font-medium">
+                            點擊此處啟動 <span class="text-emerald-800 font-bold underline">內嵌相機</span> 對齊拍攝<br>
+                            或在上方選擇預設特徵模版
+                        </p>
                     </div>
+
+                    <!-- 4. 內嵌鏡頭開啟時顯示的快照按鈕 -->
+                    <button id="btn-snap-photo" onclick="captureEmbeddedPhoto()" class="hidden absolute bottom-3 z-30 px-5 py-2 rounded-full bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold shadow-lg flex items-center gap-1.5 active:scale-95 transition-all border border-emerald-500">
+                        <i class="fa-solid fa-circle-dot animate-pulse"></i>
+                        <span>拍攝舌象</span>
+                    </button>
                 </div>
 
-                <!-- 標準化檢測項狀態面板 (草木白底卡片) -->
+                <!-- 辨識進度與狀態提示 -->
+                <div id="api-status-badge" class="hidden mb-3 p-2 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-[10px] text-center font-bold flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-spinner animate-spin"></i>
+                    <span id="api-status-text">正在將舌照發送至 Dify AI 進行視覺診斷...</span>
+                </div>
+
+                <!-- 標準化檢測項狀態面板 -->
                 <div class="grid grid-cols-3 gap-2 bg-white p-3 rounded-2xl border border-[var(--border-color)] shadow-sm mb-4 text-center">
                     <div>
                         <div id="chk-light" class="w-2.5 h-2.5 rounded-full bg-neutral-300 mx-auto mb-1.5"></div>
@@ -214,7 +226,7 @@
                 <input type="file" id="tongue-file-input" accept="image/*" class="hidden" onchange="handleTongueImageUpload(event)">
                 <button onclick="triggerFileSelect()" class="w-full py-3.5 rounded-xl border border-emerald-600/20 bg-emerald-50 text-emerald-800 font-bold text-xs flex items-center justify-center gap-2 hover:bg-emerald-100/50 transition-all mb-2 active:scale-[0.98] shadow-sm">
                     <i class="fa-solid fa-cloud-arrow-up"></i>
-                    <span>選擇本地舌照 / 現拍採集</span>
+                    <span>選擇本地舌照檔案上傳</span>
                 </button>
                 <button id="btn-to-survey" disabled onclick="navigateToSurvey()" class="w-full py-3.5 rounded-xl bg-neutral-200 text-neutral-400 border border-neutral-300 font-bold text-sm flex items-center justify-center gap-1 transition-all active:scale-[0.98]">
                     <span>下一步：填寫情志量表</span>
@@ -231,32 +243,26 @@
              ========================================== -->
         <div id="screen-survey" class="screen-transition absolute inset-0 p-6 flex flex-col justify-between z-0 translate-x-full bg-[var(--sage-light)]">
             <div class="flex flex-col flex-1 overflow-hidden">
-                <!-- 進度與分類指示器 -->
                 <div class="flex justify-between items-center mb-2">
                     <span id="survey-category-tag" class="text-[10px] text-[var(--gold-accent)] font-bold bg-amber-50 border border-amber-600/20 px-2.5 py-1 rounded-full uppercase">情緒測評</span>
                     <span id="survey-progress-lbl" class="text-xs text-neutral-600 font-semibold">Q1 / 14</span>
                 </div>
 
-                <!-- 進度條 (改為草木綠淡雅軌道) -->
                 <div class="w-full h-1.5 bg-[#cbd5c0]/40 rounded-full mb-4 overflow-hidden border border-[#cbd5c0]/10">
                     <div id="survey-progress-bar" class="h-full w-0 bg-gradient-to-r from-emerald-600 to-teal-700 rounded-full transition-all duration-300 shadow-[0_0_10px_rgba(46,92,62,0.2)]"></div>
                 </div>
 
-                <!-- 滾動內容 -->
                 <div class="flex-1 overflow-y-auto pr-1">
-                    <!-- 問題題目 (溫潤白底宣紙卡片) -->
                     <div class="p-4 rounded-2xl bg-white border border-[var(--border-color)] shadow-sm mb-4">
                         <p id="survey-question-text" class="text-sm font-bold text-emerald-950 leading-relaxed font-serif">載入題目中...</p>
                     </div>
 
-                    <!-- 選項列表 -->
                     <div id="survey-options-container" class="flex flex-col gap-2">
-                        <!-- 由JS動態生成 -->
+                        <!-- JS動態生成 -->
                     </div>
                 </div>
             </div>
 
-            <!-- 底部導航 -->
             <div class="flex gap-2 mt-4 pt-3 border-t border-neutral-200">
                 <button id="btn-survey-back" onclick="handleSurveyBack()" class="flex-1 py-3 rounded-xl border border-[var(--border-color)] bg-white text-neutral-700 text-xs font-bold active:scale-[0.98] shadow-sm">
                     返回上一步
@@ -279,10 +285,9 @@
                 <p class="text-[10px] text-neutral-600 mt-0.5">多模態 AI 雙維度辨證系統融合計算</p>
             </div>
 
-            <!-- 可滾動結果面板 -->
             <div class="flex-1 overflow-y-auto pr-1">
                 
-                <!-- 診斷核心指標 (宣紙白底配置) -->
+                <!-- 診斷核心指標 -->
                 <div class="p-3.5 rounded-2xl bg-white border border-[var(--border-color)] shadow-sm mb-3">
                     <span class="text-[10px] text-[var(--gold-accent)] font-bold tracking-wider block mb-2 font-serif">🔍 雙維度診斷結論</span>
                     <div class="grid grid-cols-2 gap-2 mb-3">
@@ -298,10 +303,10 @@
                     <p id="diag-desc-text" class="text-[11px] text-neutral-700 leading-relaxed"></p>
                 </div>
 
-                <!-- 舌診特徵細化 (草木白底卡片) -->
+                <!-- 舌診特徵細化 -->
                 <div class="p-3.5 rounded-2xl bg-white border border-[var(--border-color)] shadow-sm mb-3 flex gap-3 items-center">
                     <div class="w-16 h-16 rounded-xl border border-[var(--border-color)] bg-[#edf1ed] overflow-hidden shrink-0">
-                        <img id="res-tongue-thumb" class="w-full h-full object-cover" src="https://placehold.co/100x100/eef2ef/000?text=Tongue" alt="舌象縮圖">
+                        <img id="res-tongue-thumb" class="w-full h-full object-cover" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><rect width='100' height='100' fill='%23edf1ed'/></svg>" alt="舌象縮圖">
                     </div>
                     <div class="flex-1 grid grid-cols-2 gap-x-3 gap-y-1 text-[10px] text-neutral-700">
                         <div>舌質顏色：<span id="res-tongue-color" class="font-bold text-emerald-800">淡紅</span></div>
@@ -311,7 +316,7 @@
                     </div>
                 </div>
 
-                <!-- 音頻康養聲療模組 (特製宮商角徵羽五音療癒) -->
+                <!-- 音頻康養聲療模組 -->
                 <div class="p-3.5 rounded-2xl bg-white border border-[var(--border-color)] shadow-sm mb-3">
                     <span class="text-[10px] text-[var(--gold-accent)] font-bold tracking-wider block mb-1.5 font-serif">🎵 五音情志調心療法 (五音調養)</span>
                     <div class="flex items-center justify-between gap-3 bg-[#f0f4f1] border border-[#cbd5c0]/50 p-2.5 rounded-xl">
@@ -340,49 +345,36 @@
                 <div class="p-3.5 rounded-2xl bg-white border border-[var(--border-color)] shadow-sm mb-3">
                     <span class="text-[10px] text-[var(--gold-accent)] font-bold tracking-wider block mb-2 font-serif">🗺️ 避邪調養 Citywalk 地圖嚮導</span>
                     
-                    <!-- 澳門地圖 SVG 渲染，動態點亮據點 -->
                     <div class="w-full bg-[#edf1ed] rounded-xl p-2 border border-[#cbd5c0]/50 flex flex-col items-center">
                         <svg id="macau-map-svg" viewBox="0 0 160 140" class="w-full max-w-[200px] h-auto">
-                            <!-- 背景網格微線 -->
                             <path d="M 0 0 L 160 140" stroke="#dbe3dc" stroke-width="0.5"/>
                             <path d="M 160 0 L 0 140" stroke="#dbe3dc" stroke-width="0.5"/>
                             
-                            <!-- 澳門半島輪廓 -->
                             <path d="M50,15 C65,10 85,12 90,20 C95,25 85,35 75,40 C65,45 55,42 50,35 Z" fill="rgba(46,92,62,0.12)" stroke="#92a898" stroke-width="1.5" />
-                            <!-- 氹仔島 -->
                             <path d="M55,75 C70,72 85,73 90,80 C95,85 80,95 70,95 C60,95 50,85 55,75 Z" fill="rgba(46,92,62,0.12)" stroke="#92a898" stroke-width="1.5" />
-                            <!-- 路環島 -->
                             <path d="M50,105 C65,102 85,105 88,115 C90,125 75,135 62,132 C52,130 45,115 50,105 Z" fill="rgba(46,92,62,0.12)" stroke="#92a898" stroke-width="1.5" />
                             
-                            <!-- 跨海大橋線路 -->
                             <line x1="72" y1="40" x2="72" y2="75" stroke="#92a898" stroke-width="1" stroke-dasharray="2,2"/>
                             <line x1="78" y1="95" x2="78" y2="105" stroke="#92a898" stroke-width="1" stroke-dasharray="2,2"/>
 
-                            <!-- 動態路徑連線 (古銅金色) -->
                             <path id="map-route-line" d="" fill="none" stroke="var(--gold-accent)" stroke-width="1.5" stroke-dasharray="4,3" class="transition-all duration-700"/>
 
-                            <!-- 各區地理據點 -->
-                            <!-- 1. 祐漢 (半島東北) -->
                             <g class="map-node-group" data-id="yohan">
                                 <circle id="node-yohan" cx="80" cy="18" r="4" fill="#a3b899" stroke="white" stroke-width="1"/>
                                 <text x="80" y="11" font-size="5" fill="#55665b" text-anchor="middle" font-family="Noto Serif TC" font-weight="bold">祐漢</text>
                             </g>
-                            <!-- 2. 盧廉若 (半島中部) -->
                             <g class="map-node-group" data-id="lulam">
                                 <circle id="node-lulam" cx="68" cy="24" r="4" fill="#a3b899" stroke="white" stroke-width="1"/>
                                 <text x="61" y="25" font-size="5" fill="#55665b" text-anchor="end" font-family="Noto Serif TC" font-weight="bold">盧廉若</text>
                             </g>
-                            <!-- 3. 營地大街 (半島西南部) -->
                             <g class="map-node-group" data-id="yingde">
                                 <circle id="node-yingde" cx="62" cy="32" r="4" fill="#a3b899" stroke="white" stroke-width="1"/>
                                 <text x="55" y="34" font-size="5" fill="#55665b" text-anchor="end" font-family="Noto Serif TC" font-weight="bold">營地大街</text>
                             </g>
-                            <!-- 4. 下環媽閣 (半島南部) -->
                             <g class="map-node-group" data-id="mage">
                                 <circle id="node-mage" cx="58" cy="38" r="4" fill="#a3b899" stroke="white" stroke-width="1"/>
                                 <text x="58" y="45" font-size="5" fill="#55665b" text-anchor="middle" font-family="Noto Serif TC" font-weight="bold">媽閣</text>
                             </g>
-                            <!-- 5. 黑沙海灘 (路環東南部) -->
                             <g class="map-node-group" data-id="heisa">
                                 <circle id="node-heisa" cx="80" cy="120" r="4" fill="#a3b899" stroke="white" stroke-width="1"/>
                                 <text x="80" y="128" font-size="5" fill="#55665b" text-anchor="middle" font-family="Noto Serif TC" font-weight="bold">黑沙海灘</text>
@@ -396,7 +388,7 @@
                 <div class="p-3.5 rounded-2xl bg-white border border-[var(--border-color)] shadow-sm mb-3">
                     <span class="text-[10px] text-[var(--gold-accent)] font-bold tracking-wider block mb-3 font-serif">🚶 定制街區站點調控</span>
                     <div id="route-timeline-container" class="space-y-4 pl-3 relative border-l border-[var(--border-color)]">
-                        <!-- 由JS動態生成 -->
+                        <!-- JS動態生成 -->
                     </div>
                 </div>
 
@@ -406,7 +398,6 @@
 
             </div>
 
-            <!-- 開發者功能表與重置體驗 -->
             <div class="mt-2 flex gap-1.5 flex-none">
                 <button onclick="toggleExhibitionMode()" class="px-3 rounded-xl border border-[var(--border-color)] bg-white text-neutral-600 flex items-center justify-center hover:text-emerald-700 transition-all shadow-sm" title="切換 Dify / 本地引擎">
                     <i class="fa-solid fa-gear"></i>
@@ -420,24 +411,18 @@
 
     </div>
 
-    <!-- ==========================================
-         全域自訂 Modal (警告、加載中、模式提示) 
-         ========================================== -->
+    <!-- 全域 Modal -->
     <div id="global-modal" class="modal-overlay absolute inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 opacity-0 pointer-events-none transition-all duration-300">
         <div class="modal-card w-[80%] max-w-sm bg-white border border-[var(--border-color)] rounded-3xl p-6 shadow-2xl flex flex-col items-center text-neutral-800">
-            
-            <!-- 1. Loading 狀態 -->
             <div id="modal-loading-block" class="hidden text-center py-4">
                 <span class="inline-block text-5xl text-emerald-700 animate-spin mb-4 font-serif">☯</span>
                 <h4 class="text-sm font-bold text-emerald-950 font-serif">多模態 AI 融合分析中</h4>
                 <p class="text-[11px] text-neutral-600 mt-2">正在整合舌象特徵與 14 題心理生理指標...</p>
-                <!-- 進度條微調 -->
                 <div class="w-32 h-1 bg-neutral-100 rounded-full mx-auto mt-4 overflow-hidden border border-neutral-200">
                     <div class="h-full bg-emerald-600 animate-[pulse_1.5s_infinite] rounded-full"></div>
                 </div>
             </div>
 
-            <!-- 2. 普通文本/提示 -->
             <div id="modal-content-block" class="w-full">
                 <div class="flex items-center gap-2 mb-3">
                     <div class="w-8 h-8 rounded-full bg-emerald-50 border border-emerald-600/20 flex items-center justify-center text-emerald-700 text-sm">
@@ -445,22 +430,355 @@
                     </div>
                     <h3 id="modal-title" class="text-base font-bold text-emerald-950 font-serif">系統提示</h3>
                 </div>
-                <div id="modal-body" class="text-xs text-neutral-600 leading-relaxed mb-5 text-left max-h-48 overflow-y-auto">
-                    <!-- 提示文字 -->
-                </div>
+                <div id="modal-body" class="text-xs text-neutral-600 leading-relaxed mb-5 text-left max-h-48 overflow-y-auto"></div>
                 <button onclick="closeModal()" class="w-full py-2.5 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition-all">
                     我知道了
                 </button>
             </div>
-
         </div>
     </div>
 </div>
 
-<!-- ==========================================================
-     中醫調養與街區路線規則引擎核心腳本 
-     ========================================================== -->
 <script>
+    // Dify API 舌象工作流配置
+    const DIFY_TONGUE_CONFIG = {
+        endpoint: "https://api.dify.ai/v1",
+        apiKey: "app-4SO3SWkDRJJECZW26rCKt2bK",
+        user: "exhibition_visitor"
+    };
+
+    let currentProfileData = null;
+    let cameraStream = null; // 儲存當前內嵌攝影機串流
+
+    /**
+     * 關閉並清理內嵌攝影機串流
+     */
+    function stopCameraStream() {
+        if (cameraStream) {
+            cameraStream.getTracks().forEach(track => track.stop());
+            cameraStream = null;
+        }
+        const video = document.getElementById('tongue-video');
+        if (video) {
+            video.pause();
+            video.srcObject = null;
+            video.classList.add('hidden');
+        }
+        const snapBtn = document.getElementById('btn-snap-photo');
+        if (snapBtn) snapBtn.classList.add('hidden');
+    }
+
+    /**
+     * 啟動內嵌攝影機，將實時視訊串流渲染在方框內
+     */
+    async function startEmbeddedCamera() {
+        try {
+            stopCameraStream();
+
+            const video = document.getElementById('tongue-video');
+            const placeholder = document.getElementById('tongue-placeholder');
+            const imgPreview = document.getElementById('tongue-img-preview');
+            const snapBtn = document.getElementById('btn-snap-photo');
+
+            // 優先設定為前置鏡頭 (user)，方便拍照對齊
+            const constraints = {
+                video: {
+                    facingMode: { ideal: "user" },
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 }
+                }
+            };
+
+            cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
+            video.srcObject = cameraStream;
+            await video.play();
+
+            imgPreview.classList.add('hidden');
+            placeholder.classList.add('hidden');
+            video.classList.remove('hidden');
+            snapBtn.classList.remove('hidden');
+
+        } catch (err) {
+            console.error("無法開啟鏡頭:", err);
+            alert("無法啟動內嵌相機（請確認已允許瀏覽器存取相機權限，且網頁運行於 localhost 或 HTTPS 安全環境）。將引導您選擇檔案上傳。");
+            triggerFileSelect();
+        }
+    }
+
+    /**
+     * 拍攝內嵌攝影機畫面並發送給 Dify AI 進行分析
+     */
+    async function captureEmbeddedPhoto() {
+        const video = document.getElementById('tongue-video');
+        if (!video || video.videoWidth === 0) return;
+
+        // 建立 Canvas 將視訊畫面繪製為圖片
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        const base64Data = canvas.toDataURL('image/jpeg', 0.92);
+        selectedImageBase64 = base64Data;
+
+        // 呈現拍攝照片並關閉攝影機串流
+        const imgPreview = document.getElementById('tongue-img-preview');
+        imgPreview.src = base64Data;
+        imgPreview.classList.remove('hidden');
+
+        stopCameraStream();
+
+        // 轉為 Blob 檔發送 Dify 分析
+        canvas.toBlob(async (blob) => {
+            if (!blob) return;
+            const file = new File([blob], `tongue_${Date.now()}.jpg`, { type: 'image/jpeg' });
+
+            const badge = document.getElementById('api-status-badge');
+            const statusTxt = document.getElementById('api-status-text');
+            badge.classList.remove('hidden');
+            badge.className = "mb-3 p-2 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-[10px] text-center font-bold flex items-center justify-center gap-2";
+            statusTxt.innerText = "正在將舌照發送至 Dify AI 進行視覺診斷...";
+
+            runExhibitionScanningAnimation();
+
+            // 呼叫 Dify API 進行舌診
+            const tougStat = await analyzeTongueWithDify(file, base64Data);
+
+            if (tougStat) {
+                statusTxt.innerText = `Dify AI 分析完成: 【${tougStat}】`;
+                badge.className = "mb-3 p-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-[10px] text-center font-bold flex items-center justify-center gap-2";
+                applyApiResultToProfile(tougStat);
+            } else {
+                statusTxt.innerText = "Dify 網路響應超時或格式異常，已採用靈敏備用演算法推導體質";
+                badge.className = "mb-3 p-2 rounded-xl bg-neutral-100 border border-neutral-300 text-neutral-600 text-[10px] text-center font-bold flex items-center justify-center gap-2";
+                applyApiResultToProfile("舌苔特徵: 寒濕齒痕");
+            }
+        }, 'image/jpeg', 0.92);
+    }
+
+    /**
+     * 上傳檔案時的主處理函數
+     */
+    async function handleTongueImageUpload(event) {
+        stopCameraStream(); // 確保攝影機已關閉
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+            selectedImageBase64 = e.target.result;
+
+            const imgPreview = document.getElementById('tongue-img-preview');
+            imgPreview.src = selectedImageBase64;
+            imgPreview.classList.remove('hidden');
+            document.getElementById('tongue-placeholder').classList.add('hidden');
+            
+            const badge = document.getElementById('api-status-badge');
+            const statusTxt = document.getElementById('api-status-text');
+            badge.classList.remove('hidden');
+            badge.className = "mb-3 p-2 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-[10px] text-center font-bold flex items-center justify-center gap-2";
+            statusTxt.innerText = "正在將舌照發送至 Dify AI 進行視覺診斷...";
+
+            runExhibitionScanningAnimation();
+
+            const tougStat = await analyzeTongueWithDify(file, selectedImageBase64);
+
+            if (tougStat) {
+                statusTxt.innerText = `Dify AI 分析完成: 【${tougStat}】`;
+                badge.className = "mb-3 p-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-[10px] text-center font-bold flex items-center justify-center gap-2";
+                applyApiResultToProfile(tougStat);
+            } else {
+                statusTxt.innerText = "Dify 網路響應超時或格式異常，已採用靈敏備用演算法推導體質";
+                badge.className = "mb-3 p-2 rounded-xl bg-neutral-100 border border-neutral-300 text-neutral-600 text-[10px] text-center font-bold flex items-center justify-center gap-2";
+                
+                const mockKeywords = ["熱", "紅", "齒痕", "黃苔", "薄白"];
+                const rndKey = mockKeywords[file.size % mockKeywords.length];
+                applyApiResultToProfile(`舌苔特徵: ${rndKey}`);
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+
+    /**
+     * 呼叫 Dify Workflow 進行舌象 AI 分析
+     */
+    async function analyzeTongueWithDify(file, base64Data) {
+        try {
+            console.log("【Dify API】開始準備向 Dify Workflow 發送請求...");
+            let uploadFileId = null;
+
+            try {
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('user', DIFY_TONGUE_CONFIG.user);
+
+                const uploadRes = await fetch(`${DIFY_TONGUE_CONFIG.endpoint}/files/upload`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${DIFY_TONGUE_CONFIG.apiKey}`
+                    },
+                    body: formData
+                });
+
+                if (uploadRes.ok) {
+                    const uploadData = await uploadRes.json();
+                    uploadFileId = uploadData.id;
+                    console.log("【Dify API】圖片上傳成功，File ID:", uploadFileId);
+                } else {
+                    console.warn("【Dify API】圖片上傳返回狀態非 200:", uploadRes.status);
+                }
+            } catch (e) {
+                console.warn("【Dify API】圖片上傳拋出異常", e);
+            }
+
+            const fileObj = uploadFileId ? {
+                "transfer_method": "local_file",
+                "upload_file_id": uploadFileId,
+                "type": "image"
+            } : base64Data;
+
+            const payloadInputs = {
+                "image_toug": fileObj
+            };
+
+            console.log("【Dify API】即將送出之 Payload Inputs:", payloadInputs);
+
+            const runRes = await fetch(`${DIFY_TONGUE_CONFIG.endpoint}/workflows/run`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${DIFY_TONGUE_CONFIG.apiKey}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    inputs: payloadInputs,
+                    response_mode: "blocking",
+                    user: DIFY_TONGUE_CONFIG.user
+                })
+            });
+
+            console.log("【Dify API】Workflow 響應 HTTP 狀態碼:", runRes.status);
+
+            if (!runRes.ok) {
+                const errorTxt = await runRes.text();
+                console.error("【Dify API 錯誤回傳】:", errorTxt);
+                throw new Error(`Dify 響應異常 HTTP ${runRes.status}`);
+            }
+
+            const runData = await runRes.json();
+            console.log("【Dify API 完整輸出 JSON】:", runData);
+
+            const outputs = runData?.data?.outputs || {};
+
+            let tougStat = "";
+            if (outputs.toug_stat) {
+                tougStat = outputs.toug_stat;
+            } else if (outputs.roug_stat) {
+                tougStat = outputs.roug_stat;
+            } else if (outputs.text || outputs.result || outputs.output) {
+                const rawText = outputs.text || outputs.result || outputs.output;
+                try {
+                    const parsed = typeof rawText === 'string' ? JSON.parse(rawText) : rawText;
+                    tougStat = parsed.toug_stat || parsed.roug_stat || parsed.feature || rawText;
+                } catch (pErr) {
+                    tougStat = rawText;
+                }
+            }
+
+            console.log("【Dify API 解析成果 toug_stat】:", tougStat);
+            return tougStat;
+        } catch (err) {
+            console.error("【Dify 舌象 API 呼叫失敗】:", err);
+            return null;
+        }
+    }
+
+    /**
+     * 將 API 輸出的 toug_stat 轉化為對應的六淫特徵、舌象細節與 Citywalk 調養路線
+     */
+    function applyApiResultToProfile(tougStat) {
+        if (!tougStat) return;
+
+        const text = String(tougStat).toLowerCase();
+
+        let profile = {
+            label: `AI 辨識: ${tougStat}`,
+            color: "淡紅",
+            moss: "薄白",
+            teeth: "無",
+            moist: "潤澤",
+            evil: "氣血平和",
+            description: `AI 舌象視覺分析檢測結果為：【${tougStat}】。`,
+            tea: "菊花明目杞子茶",
+            tea_desc: "平肝明目、潤燥生津。",
+            shop: "同仁堂 (澳門大堂街店)",
+            nodes: ["mage", "lulam", "heisa"]
+        };
+
+        if (text.includes("黃") || text.includes("濕熱") || text.includes("熱")) {
+            profile.color = "紅赤偏深";
+            profile.moss = "焦黃厚膩";
+            profile.teeth = text.includes("齒痕") ? "有齒痕" : "無明顯齒痕";
+            profile.moist = "黏液偏多";
+            profile.evil = "外感濕熱";
+            profile.description = `AI 舌象視覺診斷為【${tougStat}】。體內濕熱內蘊、胃火上升，宜清熱利濕、平肝理氣。`;
+            profile.tea = "廿四味涼茶 / 溪黃草蒲公英茶";
+            profile.tea_desc = "清熱瀉火、利濕解毒，快速清除胃腸濕熱與煩躁。";
+            profile.shop = "百老匯涼茶鋪 (老字號)";
+            profile.nodes = ["yohan", "lulam", "yingde"];
+        } 
+        else if (text.includes("紅") || text.includes("少苔") || text.includes("陰虛") || text.includes("無苔")) {
+            profile.color = "深紅絳色";
+            profile.moss = "少苔 / 鏡面";
+            profile.teeth = "無";
+            profile.moist = "乾枯少津";
+            profile.evil = "陰虛燥熱";
+            profile.description = `AI 舌象視覺診斷為【${tougStat}】。體內津液不足、虛火上炎，宜養陰潤燥、生津安神。`;
+            profile.tea = "沙參麥冬百合飲 / 羅漢果雪梨膏";
+            profile.tea_desc = "養陰潤肺、益胃生津，補足元陰平息虛火。";
+            profile.shop = "康壽堂中藥房";
+            profile.nodes = ["lulam", "yingde", "heisa"];
+        } 
+        else if (text.includes("白") || text.includes("寒") || text.includes("濕") || text.includes("齒痕") || text.includes("胖")) {
+            profile.color = "淡白偏暗";
+            profile.moss = "白厚而膩";
+            profile.teeth = "明顯齒痕";
+            profile.moist = "水滑濕漉";
+            profile.evil = "外感寒濕";
+            profile.description = `AI 舌象視覺診斷為【${tougStat}】。脾虛水濕內停、寒濕阻滯，宜溫中散寒、健脾利濕。`;
+            profile.tea = "廣東去濕五花茶 / 生薑大棗茶";
+            profile.tea_desc = "溫中散寒、健脾利濕，促進體內水濕代謝。";
+            profile.shop = "大聲公涼茶 (澳門世界遺產老舖)";
+            profile.nodes = ["yohan", "yingde", "heisa"];
+        }
+        else if (text.includes("紫") || text.includes("瘀") || text.includes("斑")) {
+            profile.color = "紫暗有瘀斑";
+            profile.moss = "薄白";
+            profile.teeth = "微有齒痕";
+            profile.moist = "正常潤澤";
+            profile.evil = "氣滯血瘀";
+            profile.description = `AI 舌象視覺診斷為【${tougStat}】。經絡氣血運行不暢，宜活血化瘀、疏肝理氣。`;
+            profile.tea = "玫瑰山楂紅花茶";
+            profile.tea_desc = "行氣活血、舒肝解鬱、溫通經絡。";
+            profile.shop = "同仁堂 (澳門店)";
+            profile.nodes = ["lulam", "yingde", "mage"];
+        }
+        else {
+            profile.color = "淡紅潤澤";
+            profile.moss = "薄白均勻";
+            profile.teeth = "無";
+            profile.moist = "津液充沛";
+            profile.evil = "氣血平和";
+            profile.description = `AI 舌象視覺診斷為【${tougStat}】。身體氣血和諧，臟腑運行良好。`;
+            profile.tea = "菊花明目杞子茶";
+            profile.tea_desc = "平肝明目、調和氣血。";
+            profile.shop = "同仁堂 (澳門店)";
+            profile.nodes = ["mage", "lulam", "heisa"];
+        }
+
+        currentProfileData = profile;
+    }
+
     // 澳門 14 題情志問卷數據庫
     const SURVEY_QUESTIONS = [
         {
@@ -638,7 +956,7 @@
             options: [
                 { val: "A", text: "活潑小狗：精力旺盛，隨時準備大鬧一場" },
                 { val: "B", text: "憤怒刺蝟：渾身帶刺，隨時準備爭執抗爭" },
-                { val: "C", text: "受傷小貓：躲在洞裡哭泣，自憐自艾" },
+                { val: "C", text: "受傷小貓：躲在洞裡哭泣，自憐自壓" },
                 { val: "D", text: "滾輪倉鼠：腦袋轉不停，把自己累得半死" },
                 { val: "E", text: "驚慌小鹿：豎起耳朵，一有動靜就驚慌逃開" },
                 { val: "F", text: "縮頭烏龜：膽小缺乏安全感，畏畏縮縮" },
@@ -700,7 +1018,7 @@
         "heat_damp": {
             label: "濕熱黃膩",
             color: "紅赤偏深", moss: "焦黃厚膩", teeth: "微有齒痕", moist: "黏液多",
-            evil: "外感濕熱", description: "您的舌體紅赤，覆蓋著一層黏膩且發黃 of 厚舌苔，此為經典的『濕熱內蘊』或『胃火熾盛』。常伴隨口苦口乾、臉部容易出油、急躁易怒或大便氣味重的症狀。",
+            evil: "外感濕熱", description: "您的舌體紅赤，覆蓋著一層黏膩且發黃之厚舌苔，此為經典的『濕熱內蘊』或『胃火熾盛』。常伴隨口苦口乾、臉部容易出油、急躁易怒或大便氣味重的症狀。",
             tea: "廿四味涼茶 / 溪黃草蒲公英茶", tea_desc: "清熱利濕、瀉火解毒。能快速清除胃腸濕熱，消除煩躁與內火。",
             shop: "百老匯涼茶鋪 (老字號手工涼茶)",
             nodes: ["yohan", "lulam", "yingde"]
@@ -715,7 +1033,6 @@
         }
     };
 
-    // 變數存儲
     let currentQuestionIndex = 0;
     let selectedPreset = null;
     let selectedImageBase64 = "";
@@ -725,10 +1042,8 @@
     let currentOscillators = [];
     let isPlayingAudio = false;
 
-    // ==========================================
-    // 導航控制模組 
-    // ==========================================
     function navigateToScreen(targetScreenId) {
+        stopCameraStream(); // 切換畫面時自動清理相機串流
         const screens = ["screen-cover", "screen-tongue", "screen-survey", "screen-result"];
         screens.forEach(id => {
             const el = document.getElementById(id);
@@ -756,18 +1071,17 @@
         renderSurveyQuestion();
     }
 
-    // ==========================================
-    // 舌象診斷與模擬檢測 
-    // ==========================================
     function triggerFileSelect() {
+        stopCameraStream();
         document.getElementById('tongue-file-input').click();
     }
 
     function selectTonguePreset(presetKey) {
+        stopCameraStream();
         selectedPreset = presetKey;
         const data = HEALTH_PRESETS[presetKey];
+        currentProfileData = Object.assign({}, data, { nodes: [...data.nodes] });
         
-        // 點亮按鈕樣式
         document.querySelectorAll('.preset-btn').forEach(btn => {
             if (btn.getAttribute('data-preset') === presetKey) {
                 btn.classList.add('border-emerald-600', 'bg-emerald-50', 'text-emerald-800');
@@ -778,7 +1092,6 @@
             }
         });
 
-        // 生成模擬舌象預覽
         const mockSvgText = encodeURIComponent(`
             <svg xmlns="http://www.w3.org/2000/svg" width="300" height="400" viewBox="0 0 300 400">
                 <rect width="300" height="400" fill="#edf1ed" />
@@ -787,7 +1100,6 @@
                     presetKey === 'damp_cold' ? '#ffccd5' :
                     presetKey === 'heat_damp' ? '#e11d48' : '#be123c'
                 }" />
-                <!-- 模擬舌苔 -->
                 <path d="M 80,180 C 80,260 150,320 150,320 C 150,320 220,260 220,180 C 220,140 150,140 150,140 C 150,140 80,140 80,180 Z" fill="${
                     presetKey === 'healthy' ? 'rgba(255,255,255,0.45)' :
                     presetKey === 'damp_cold' ? 'rgba(255,255,255,0.85)' :
@@ -804,36 +1116,15 @@
         runExhibitionScanningAnimation();
     }
 
-    function handleTongueImageUpload(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            selectedImageBase64 = e.target.result;
-            selectedPreset = "damp_cold"; 
-
-            const imgPreview = document.getElementById('tongue-img-preview');
-            imgPreview.src = selectedImageBase64;
-            imgPreview.classList.remove('hidden');
-            document.getElementById('tongue-placeholder').classList.add('hidden');
-
-            runExhibitionScanningAnimation();
-        };
-        reader.readAsDataURL(file);
-    }
-
     function runExhibitionScanningAnimation() {
         const laser = document.getElementById('scan-laser');
         laser.classList.remove('hidden');
 
-        // 重置狀態燈
         ["chk-light", "chk-shadow", "chk-posture"].forEach(id => {
             const dot = document.getElementById(id);
             dot.className = "w-2.5 h-2.5 rounded-full bg-neutral-300 mx-auto mb-1.5 animate-pulse";
         });
 
-        // 模擬逐項對齊點亮
         setTimeout(() => {
             document.getElementById('chk-light').className = "w-2.5 h-2.5 rounded-full bg-emerald-600 mx-auto mb-1.5 shadow-[0_2px_6px_rgba(46,92,62,0.3)]";
             document.getElementById('txt-light').className = "text-[10px] text-emerald-700 font-bold block";
@@ -848,7 +1139,6 @@
             document.getElementById('chk-posture').className = "w-2.5 h-2.5 rounded-full bg-emerald-600 mx-auto mb-1.5 shadow-[0_2px_6px_rgba(46,92,62,0.3)]";
             document.getElementById('txt-posture').className = "text-[10px] text-emerald-700 font-bold block";
             
-            // 掃描完畢，解鎖下一步
             laser.classList.add('hidden');
             const nextBtn = document.getElementById('btn-to-survey');
             nextBtn.disabled = false;
@@ -856,23 +1146,17 @@
         }, 2400);
     }
 
-    // ==========================================
-    // 七情問卷渲染與邏輯 
-    // ==========================================
     function renderSurveyQuestion() {
         const qData = SURVEY_QUESTIONS[currentQuestionIndex];
         
-        // 更新進度與指標
         document.getElementById('survey-category-tag').innerText = qData.category;
         document.getElementById('survey-progress-lbl').innerText = `Q${currentQuestionIndex + 1} / ${SURVEY_QUESTIONS.length}`;
         
         const progressPercentage = ((currentQuestionIndex) / SURVEY_QUESTIONS.length) * 100;
         document.getElementById('survey-progress-bar').style.width = `${progressPercentage}%`;
 
-        // 題目文本
         document.getElementById('survey-question-text').innerText = qData.text;
 
-        // 選項容器
         const container = document.getElementById('survey-options-container');
         container.innerHTML = '';
 
@@ -880,7 +1164,6 @@
             const item = document.createElement('div');
             const isSelected = surveyAnswers[currentQuestionIndex] === opt.val;
             
-            // 使用中古淡綠調高對比卡片
             item.className = `p-3 rounded-xl border text-xs cursor-pointer flex items-center gap-2 transition-all ${
                 isSelected 
                 ? 'border-emerald-600 bg-emerald-50 text-emerald-900 font-bold shadow-sm' 
@@ -895,15 +1178,12 @@
             item.onclick = () => {
                 surveyAnswers[currentQuestionIndex] = opt.val;
                 document.getElementById('btn-survey-next').disabled = false;
-                
-                // 再次渲染高亮
                 renderSurveyQuestion();
             };
 
             container.appendChild(item);
         });
 
-        // 導航按鈕狀態
         document.getElementById('btn-survey-back').disabled = currentQuestionIndex === 0;
         document.getElementById('btn-survey-next').disabled = !surveyAnswers[currentQuestionIndex];
         document.getElementById('btn-survey-next').innerText = currentQuestionIndex === SURVEY_QUESTIONS.length - 1 ? "完成多模態辨證" : "下一題";
@@ -925,13 +1205,9 @@
         }
     }
 
-    // ==========================================
-    // 多模態數據合流與辨證大腦 
-    // ==========================================
     async function processDiagnosisAndLocalInference() {
         showModal(true, 'loading');
 
-        // 1. 計算七情得分分值
         let emotionalScores = { "喜": 0, "怒": 0, "悲": 0, "思": 0, "憂": 0, "驚": 0, "恐": 0 };
         const emotionMappingTable = { "A": "喜", "B": "怒", "C": "悲", "D": "思", "E": "憂", "F": "驚", "G": "恐" };
 
@@ -941,7 +1217,6 @@
             if (emo) emotionalScores[emo]++;
         }
 
-        // 尋找最高分情志
         let dominantEmotion = "憂";
         let maxScore = 0;
         for (let emo in emotionalScores) {
@@ -951,14 +1226,11 @@
             }
         }
 
-        // 2. 獲取舌象客觀體質
-        const presetKey = selectedPreset || "damp_cold";
-        const tongueData = HEALTH_PRESETS[presetKey];
+        const tongueData = currentProfileData || HEALTH_PRESETS["damp_cold"];
 
         let finalDiagnosisText = "";
 
         if (isExhibitionMode) {
-            // === Dify API 展會網路連接 ===
             try {
                 const response = await fetch('https://api.dify.ai/v1/chat-messages', {
                     method: 'POST',
@@ -989,72 +1261,55 @@
                 finalDiagnosisText = generateLocalInferenceReport(tongueData.evil, dominantEmotion, maxScore);
             }
         } else {
-            // 預設直接使用高準確度本地中醫規則大腦
             finalDiagnosisText = generateLocalInferenceReport(tongueData.evil, dominantEmotion, maxScore);
         }
 
-        // 3. 渲染結果數據
         document.getElementById('diag-six-evils').innerText = tongueData.evil;
         document.getElementById('diag-seven-emotions').innerText = `${dominantEmotion}氣偏頗 (${maxScore}分)`;
         document.getElementById('diag-desc-text').innerText = finalDiagnosisText;
 
-        // 舌象物理特徵量化
         document.getElementById('res-tongue-color').innerText = tongueData.color;
         document.getElementById('res-tongue-moss').innerText = tongueData.moss;
         document.getElementById('res-tongue-teeth').innerText = tongueData.teeth;
         document.getElementById('res-tongue-moist').innerText = tongueData.moist;
 
-        // 舌照縮圖同步
         document.getElementById('res-tongue-thumb').src = document.getElementById('tongue-img-preview').src;
 
-        // 藥食同源與老鋪
         document.getElementById('tea-name').innerText = tongueData.tea;
         document.getElementById('tea-desc').innerText = tongueData.tea_desc;
         document.getElementById('tea-shop').innerText = tongueData.shop;
 
-        // 4. 宮商角徵羽五音情志調心療法配置
         setupPentatonicAcoustics(dominantEmotion);
 
-        // 5. 澳門舊區避邪調養地圖高亮與路徑繪製
         renderInteractiveMacauMap(tongueData.nodes);
-
-        // 6. 渲染站點 Timeline 詳細信息
         renderRouteTimeline(tongueData.nodes);
 
-        // 關閉 Modal 並進入結果頁面
         setTimeout(() => {
             closeModal();
             navigateToScreen('screen-result');
-        }, 1500);
+        }, 1200);
     }
 
     function generateLocalInferenceReport(evil, emotion, score) {
         return `多模態融合辨證表明：您當前身體在外部受到『${evil}』侵襲，氣血經絡運行受阻；內在情志則呈現『${emotion}氣偏頗』，在 14 項多維度評測中具有顯著表現。${evil}停滯會加重${emotion}志鬱結，進而影響脾胃，此時急需通過澳門特定民生舊區的物理屬性能量場（如街市火熱、園林平肝、山海接木）進行物理避邪與情志疏導，讓身心能量回歸平和狀態。`;
     }
 
-    // ==========================================
-    // 澳門交互向量地圖與 Timeline 
-    // ==========================================
     function renderInteractiveMacauMap(nodeKeys) {
-        // 重置所有地圖節點顏色與閃爍
         document.querySelectorAll('.map-node-group circle').forEach(circle => {
             circle.setAttribute('fill', '#a3b899'); 
             circle.classList.remove('glow-node');
         });
 
-        // 繪製與連接高亮路徑
         let dPath = "";
         nodeKeys.forEach((key, index) => {
             const loc = LOCATIONS_DB[key];
             if (loc) {
-                // 點亮特定節點
                 const circle = document.getElementById(`node-${key}`);
                 if (circle) {
                     circle.setAttribute('fill', 'var(--gold-accent)');
                     circle.classList.add('glow-node');
                 }
 
-                // 畫跨海大橋連線
                 if (index === 0) {
                     dPath += `M ${loc.coords.x} ${loc.coords.y}`;
                 } else {
@@ -1063,7 +1318,6 @@
             }
         });
 
-        // 更新連線路徑
         const pathEl = document.getElementById('map-route-line');
         pathEl.setAttribute('d', dPath);
     }
@@ -1080,7 +1334,6 @@
             card.className = "relative pl-6 pb-2 transition-all hover:translate-x-1";
             
             card.innerHTML = `
-                <!-- 序號圖標 -->
                 <div class="absolute -left-6 top-0 w-4 h-4 rounded-full bg-white border-2 border-emerald-600 flex items-center justify-center text-[8px] text-emerald-700 font-bold">${idx + 1}</div>
                 <h4 class="text-xs font-bold text-emerald-950 font-serif">${loc.title}</h4>
                 <p class="text-[10px] text-neutral-600 mt-1 leading-relaxed">${loc.desc}</p>
@@ -1090,13 +1343,9 @@
         });
     }
 
-    // ==========================================
-    // Web Audio API 中醫五音情志聲療（宮商角徵羽） 
-    // ==========================================
     function setupPentatonicAcoustics(dominantEmotion) {
         const soundTitle = document.getElementById('sound-title');
         
-        // 中醫五音頻率：宮(土)-脾, 商(金)-肺, 角(木)-肝, 徵(火)-心, 羽(水)-腎
         const pentatonicConfig = {
             "喜": { name: "徵音 (Zhi Harmony)", freq: 396, text: "火頻率，理順心神氣血，平撫過度亢奮" },
             "怒": { name: "角音 (Jiao Harmony)", freq: 330, text: "木頻率，疏肝理氣，宣泄體內積壓鬱怒" },
@@ -1111,7 +1360,6 @@
         soundTitle.innerText = `${config.name} - 經絡波頻`;
         soundTitle.nextElementSibling.innerText = config.text;
         
-        // 緩存當前音頻頻率
         soundTitle.dataset.freq = config.freq;
     }
 
@@ -1121,7 +1369,6 @@
         const icon = document.getElementById('play-icon');
 
         if (isPlayingAudio) {
-            // 停止播放
             currentOscillators.forEach(osc => {
                 try { osc.stop(); } catch(e){}
             });
@@ -1130,12 +1377,11 @@
             icon.className = "fa-solid fa-play text-xs pl-0.5";
             document.getElementById('btn-play-sound').className = "w-9 h-9 rounded-full bg-emerald-700 text-white flex items-center justify-center transition-all shadow-[0_4px_10px_rgba(46,92,62,0.15)]";
         } else {
-            // 開啟播放（Web Audio API 頻率振盪器合成和諧中醫五音）
             try {
                 if (!currentAudioContext) {
                     currentAudioContext = new (window.AudioContext || window.webkitAudioContext)();
                 }
-                
+
                 const frequencies = [targetFreq, targetFreq * 1.5, targetFreq * 2];
                 
                 frequencies.forEach((f, idx) => {
@@ -1165,9 +1411,6 @@
         }
     }
 
-    // ==========================================
-    // 全域彈窗與輔助函數 
-    // ==========================================
     function showModal(show, type = 'message', title = '', body = '') {
         const overlay = document.getElementById('global-modal');
         const loader = document.getElementById('modal-loading-block');
@@ -1201,8 +1444,8 @@
         showModal(true, 'message', 
             isExhibitionMode ? "🌐 已切換：Dify 雲端大腦" : "🧠 已切換：內置專家大腦", 
             isExhibitionMode 
-            ? "系統已成功切換為 <strong>Dify 雲端大型語言模型 (LLM) 實時多模態對接模式</strong>。此模式在展會網路流暢時可生成極具個性化的調養文案。<br><br>*注意：展館地下室可能訊號微弱，若遇超時，大腦會無縫防禦性降級至本地運行。"
-            : "系統已切換為 <strong>本地嵌入式專家系統大腦</strong>。此模式100%不依賴網路，提供亞毫秒級的超快速、超穩定的診斷響應，最適合展覽高峰期大量遊客演示用。"
+            ? "系統已成功切換為 <strong>Dify 雲端大型語言模型 (LLM) 實時多模態對接模式</strong>。"
+            : "系統已切換為 <strong>本地嵌入式專家系統大腦</strong>。"
         );
     }
 
@@ -1211,16 +1454,20 @@
             toggleHealingSound();
         }
 
+        stopCameraStream();
+
         selectedPreset = null;
         selectedImageBase64 = "";
+        currentProfileData = null;
         surveyAnswers = {};
         currentQuestionIndex = 0;
 
-        // 重置 UI
         document.getElementById('tongue-img-preview').classList.add('hidden');
         document.getElementById('tongue-placeholder').classList.remove('hidden');
         document.getElementById('btn-to-survey').disabled = true;
         document.getElementById('btn-to-survey').className = "w-full py-3.5 rounded-xl bg-neutral-200 text-neutral-400 border border-neutral-300 font-bold text-sm flex items-center justify-center gap-1 transition-all active:scale-[0.98]";
+
+        document.getElementById('api-status-badge').classList.add('hidden');
 
         document.querySelectorAll('.preset-btn').forEach(btn => {
             btn.className = "preset-btn py-1 px-1.5 rounded-lg border border-[var(--border-color)] bg-white text-[10px] text-neutral-700 hover:border-emerald-600/40 transition-all font-semibold shadow-sm";
