@@ -27,23 +27,42 @@
             font-family: 'Plus Jakarta Sans', 'Noto Serif TC', serif;
             background-color: var(--sage-light);
             color: var(--charcoal);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
+        /* 自適應手機與平板 (iPad) 比例容器 */
         .app-container {
             width: 100%;
-            max-width: 480px;
+            max-width: 520px;
             height: 100vh;
+            height: 100dvh;
             background: linear-gradient(180deg, #f7faf8 0%, var(--sage-light) 100%);
             position: relative;
             overflow: hidden;
             display: flex;
             flex-direction: column;
         }
+        /* 平板或桌面端自動調整高度與圓角外框，保持精緻比例 */
         @media (min-width: 640px) {
             .app-container {
-                height: 850px;
-                border-radius: 24px;
-                box-shadow: 0 20px 50px rgba(46, 92, 62, 0.12);
+                max-width: 560px;
+                height: 90vh;
+                max-height: 950px;
+                border-radius: 28px;
+                box-shadow: 0 25px 60px rgba(46, 92, 62, 0.15);
                 border: 1px solid var(--border-color);
+            }
+        }
+        @media (min-width: 1024px) {
+            .app-container {
+                max-width: 460px;
+                height: 88vh;
+                max-height: 880px;
             }
         }
         ::-webkit-scrollbar {
@@ -86,7 +105,7 @@
         html[data-lang="en"] .lang-zh { display: none !important; }
     </style>
 </head>
-<body class="flex items-center justify-center min-h-screen p-0 sm:p-4">
+<body class="p-0 sm:p-4">
 
 <div class="app-container flex flex-col justify-between">
     
@@ -96,7 +115,7 @@
         <!-- ==========================================
              第一步：歡迎封面 (Cover Screen)
              ========================================== -->
-        <div id="screen-cover" class="screen-transition absolute inset-0 p-6 flex flex-col justify-between z-10 bg-[var(--sage-light)]">
+        <div id="screen-cover" class="screen-transition absolute inset-0 p-5 sm:p-6 flex flex-col justify-between z-10 bg-[var(--sage-light)]">
             <!-- 語言切換按鈕 (頂部) -->
             <div class="flex justify-end pt-1">
                 <button onclick="toggleLanguage()" class="px-3.5 py-1.5 rounded-full bg-white border border-[var(--border-color)] text-xs font-bold text-emerald-800 shadow-sm hover:bg-emerald-50 transition-all flex items-center gap-1.5 active:scale-95">
@@ -105,25 +124,25 @@
                 </button>
             </div>
 
-            <div class="flex-1 flex flex-col justify-center items-center text-center mt-2">
-                <div class="w-24 h-24 rounded-3xl bg-emerald-50 border border-emerald-600/30 flex items-center justify-center shadow-[0_10px_30px_rgba(46,92,62,0.08)] mb-5 relative group overflow-hidden">
-                    <span class="text-5xl text-emerald-700 font-serif"><img src="apps_icon.png" alt="icon"></span>
+            <div class="flex-1 flex flex-col justify-center items-center text-center mt-1">
+                <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-emerald-50 border border-emerald-600/30 flex items-center justify-center shadow-[0_10px_30px_rgba(46,92,62,0.08)] mb-4 relative group overflow-hidden">
+                    <span class="text-4xl sm:text-5xl text-emerald-700 font-serif"><img src="apps_icon.png" alt="icon"></span>
                     <div class="absolute inset-0 bg-gradient-to-tr from-emerald-600/5 to-transparent"></div>
                 </div>
                 
-                <h1 class="text-4xl font-extrabold tracking-widest font-serif gradient-text mb-1">舌苔walk</h1>
-                <p class="text-xs tracking-[0.25em] text-emerald-800/80 font-bold uppercase mb-4">Macau City Walk</p>
+                <h1 class="text-3xl sm:text-4xl font-extrabold tracking-widest font-serif gradient-text mb-1">舌苔walk</h1>
+                <p class="text-xs tracking-[0.25em] text-emerald-800/80 font-bold uppercase mb-3">Macau City Walk</p>
                 
-                <div class="h-[1px] w-1/3 bg-gradient-to-r from-transparent via-emerald-600/30 to-transparent mb-4"></div>
+                <div class="h-[1px] w-1/3 bg-gradient-to-r from-transparent via-emerald-600/30 to-transparent mb-3"></div>
                 
-                <p class="text-sm text-neutral-700 max-w-xs leading-relaxed">
+                <p class="text-xs sm:text-sm text-neutral-700 max-w-xs leading-relaxed">
                     <span class="lang-zh">第六屆澳門聯校科學展覽參賽作品<br><span class="text-emerald-800 font-semibold">AI 舌診 · 七情雙維度辨證系統</span></span>
                     <span class="lang-en">6th Macau Joint School Science Exhibition Entry<br><span class="text-emerald-800 font-semibold">AI Tongue Diagnosis & Emotion System</span></span>
                 </p>
 
-                <div class="grid grid-cols-2 gap-2 w-full mt-5">
-                    <div class="p-3 rounded-2xl bg-white border border-[var(--border-color)] shadow-sm flex flex-col items-center justify-center text-center">
-                        <i class="fa-solid fa-eye text-emerald-700 mb-1 text-base"></i>
+                <div class="grid grid-cols-2 gap-2 w-full mt-4">
+                    <div class="p-2.5 sm:p-3 rounded-2xl bg-white border border-[var(--border-color)] shadow-sm flex flex-col items-center justify-center text-center">
+                        <i class="fa-solid fa-eye text-emerald-700 mb-1 text-sm sm:text-base"></i>
                         <h4 class="text-xs font-bold text-neutral-800">
                             <span class="lang-zh">舌象視覺特徵</span>
                             <span class="lang-en">Tongue Vision</span>
@@ -133,8 +152,8 @@
                             <span class="lang-en">Real-time Dify API</span>
                         </p>
                     </div>
-                    <div class="p-3 rounded-2xl bg-white border border-[var(--border-color)] shadow-sm flex flex-col items-center justify-center text-center">
-                        <i class="fa-solid fa-heart-pulse text-rose-600 mb-1 text-base"></i>
+                    <div class="p-2.5 sm:p-3 rounded-2xl bg-white border border-[var(--border-color)] shadow-sm flex flex-col items-center justify-center text-center">
+                        <i class="fa-solid fa-heart-pulse text-rose-600 mb-1 text-sm sm:text-base"></i>
                         <h4 class="text-xs font-bold text-neutral-800">
                             <span class="lang-zh">七情量化測評</span>
                             <span class="lang-en">7-Emotions Test</span>
@@ -144,8 +163,8 @@
                             <span class="lang-en">Emotional well-being</span>
                         </p>
                     </div>
-                    <div class="p-3 rounded-2xl bg-white border border-[var(--border-color)] col-span-2 flex items-center justify-center gap-3 shadow-sm text-left">
-                        <i class="fa-solid fa-map-location-dot text-[var(--gold-accent)] text-base"></i>
+                    <div class="p-2.5 sm:p-3 rounded-2xl bg-white border border-[var(--border-color)] col-span-2 flex items-center justify-center gap-3 shadow-sm text-left">
+                        <i class="fa-solid fa-map-location-dot text-[var(--gold-accent)] text-sm sm:text-base shrink-0"></i>
                         <div>
                             <h4 class="text-xs font-bold text-neutral-800">
                                 <span class="lang-zh">避邪調養 CityWalk 地圖嚮導</span>
@@ -160,15 +179,15 @@
                 </div>
             </div>
 
-            <div class="mt-4 flex flex-col gap-2">
-                <button onclick="startAppJourney()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-700 to-teal-800 text-white font-bold text-base shadow-[0_8px_24px_rgba(46,92,62,0.15)] hover:shadow-[0_8px_30px_rgba(46,92,62,0.25)] transition-all flex items-center justify-center gap-2 active:scale-[0.98]">
+            <div class="mt-3 sm:mt-4 flex flex-col gap-2">
+                <button onclick="startAppJourney()" class="w-full py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-emerald-700 to-teal-800 text-white font-bold text-sm sm:text-base shadow-[0_8px_24px_rgba(46,92,62,0.15)] hover:shadow-[0_8px_30px_rgba(46,92,62,0.25)] transition-all flex items-center justify-center gap-2 active:scale-[0.98]">
                     <span class="lang-zh">開啟身心調養之旅</span>
                     <span class="lang-en">Start Wellness Journey</span>
                     <i class="fa-solid fa-arrow-right text-xs"></i>
                 </button>
                 <span class="text-[10px] text-neutral-500 text-center block">
-                    <span class="lang-zh">© 2026 澳門聯校科展「澳康遊」研發小組 ver 3.1</span>
-                    <span class="lang-en">© 2026 Macau Joint School Science Exhibition ver 3.1</span>
+                    <span class="lang-zh">© 2026 澳門聯校科展「澳康遊」研發小組</span>
+                    <span class="lang-en">© 2026 Macau Joint School Science Exhibition</span>
                 </span>
             </div>
         </div>
@@ -176,7 +195,7 @@
         <!-- ==========================================
              第二步：AI 舌診特徵採集 (Tongue Screen)
              ========================================== -->
-        <div id="screen-tongue" class="screen-transition absolute inset-0 p-6 flex flex-col justify-between z-0 translate-x-full bg-[var(--sage-light)]">
+        <div id="screen-tongue" class="screen-transition absolute inset-0 p-5 sm:p-6 flex flex-col justify-between z-0 translate-x-full bg-[var(--sage-light)]">
             <!-- 頂部列：Phase 與語言切換 -->
             <div class="flex justify-between items-center pt-1 mb-2">
                 <span class="text-[10px] uppercase tracking-widest text-emerald-800 font-bold bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-600/20">
@@ -190,20 +209,20 @@
             </div>
 
             <div class="flex flex-col flex-1 overflow-y-auto pr-1">
-                <div class="text-center mb-3">
-                    <h2 class="text-xl font-bold text-neutral-800">
+                <div class="text-center mb-2 sm:mb-3">
+                    <h2 class="text-lg sm:text-xl font-bold text-neutral-800">
                         <span class="lang-zh">AI 數據標準化採集</span>
                         <span class="lang-en">AI Data Standardization</span>
                     </h2>
-                    <p class="text-xs text-neutral-500 mt-1">
+                    <p class="text-xs text-neutral-500 mt-0.5">
                         <span class="lang-zh">請上傳舌面照片或使用展會預設模版進行體驗</span>
                         <span class="lang-en">Upload tongue photo or select a preset template</span>
                     </p>
                 </div>
 
                 <!-- 預設模版選取 -->
-                <div class="mb-3">
-                    <h4 class="text-xs font-bold text-neutral-700 mb-2 flex items-center gap-1">
+                <div class="mb-2 sm:mb-3">
+                    <h4 class="text-xs font-bold text-neutral-700 mb-1.5 flex items-center gap-1">
                         <i class="fa-solid fa-wand-magic-sparkles text-[var(--gold-accent)]"></i>
                         <span>
                             <span class="lang-zh">科展快速體驗 - 預設舌象特徵</span>
@@ -211,19 +230,19 @@
                         </span>
                     </h4>
                     <div class="grid grid-cols-4 gap-1.5">
-                        <button onclick="selectTonguePreset('healthy')" class="preset-btn py-1 px-1.5 rounded-lg border border-[var(--border-color)] bg-white text-[10px] text-neutral-700 hover:border-emerald-600/45 transition-all font-semibold shadow-sm" data-preset="healthy">
+                        <button onclick="selectTonguePreset('healthy')" class="preset-btn py-1.5 px-1 rounded-lg border border-[var(--border-color)] bg-white text-[10px] text-neutral-700 hover:border-emerald-600/45 transition-all font-semibold shadow-sm text-center" data-preset="healthy">
                             <span class="lang-zh">健康淡紅</span>
                             <span class="lang-en">Healthy</span>
                         </button>
-                        <button onclick="selectTonguePreset('damp_cold')" class="preset-btn py-1 px-1.5 rounded-lg border border-[var(--border-color)] bg-white text-[10px] text-neutral-700 hover:border-emerald-600/45 transition-all font-semibold shadow-sm" data-preset="damp_cold">
+                        <button onclick="selectTonguePreset('damp_cold')" class="preset-btn py-1.5 px-1 rounded-lg border border-[var(--border-color)] bg-white text-[10px] text-neutral-700 hover:border-emerald-600/45 transition-all font-semibold shadow-sm text-center" data-preset="damp_cold">
                             <span class="lang-zh">寒濕齒痕</span>
                             <span class="lang-en">Damp-Cold</span>
                         </button>
-                        <button onclick="selectTonguePreset('heat_damp')" class="preset-btn py-1 px-1.5 rounded-lg border border-[var(--border-color)] bg-white text-[10px] text-neutral-700 hover:border-emerald-600/45 transition-all font-semibold shadow-sm" data-preset="heat_damp">
+                        <button onclick="selectTonguePreset('heat_damp')" class="preset-btn py-1.5 px-1 rounded-lg border border-[var(--border-color)] bg-white text-[10px] text-neutral-700 hover:border-emerald-600/45 transition-all font-semibold shadow-sm text-center" data-preset="heat_damp">
                             <span class="lang-zh">濕熱黃膩</span>
                             <span class="lang-en">Damp-Heat</span>
                         </button>
-                        <button onclick="selectTonguePreset('yin_def')" class="preset-btn py-1 px-1.5 rounded-lg border border-[var(--border-color)] bg-white text-[10px] text-neutral-700 hover:border-emerald-600/45 transition-all font-semibold shadow-sm" data-preset="yin_def">
+                        <button onclick="selectTonguePreset('yin_def')" class="preset-btn py-1.5 px-1 rounded-lg border border-[var(--border-color)] bg-white text-[10px] text-neutral-700 hover:border-emerald-600/45 transition-all font-semibold shadow-sm text-center" data-preset="yin_def">
                             <span class="lang-zh">陰虛紅絳</span>
                             <span class="lang-en">Yin Def.</span>
                         </button>
@@ -231,8 +250,8 @@
                 </div>
 
                 <!-- 相機掃描框容器 -->
-                <div class="relative w-full h-52 bg-[#eef2ef] rounded-2xl border border-[var(--border-color)] flex items-center justify-center overflow-hidden shadow-inner mb-3">
-                    <div class="absolute w-32 h-40 border-2 border-dashed border-[var(--gold-accent)]/80 rounded-[50%_50%_42%_42%] z-20 flex items-center justify-center pointer-events-none">
+                <div class="relative w-full h-44 sm:h-52 bg-[#eef2ef] rounded-2xl border border-[var(--border-color)] flex items-center justify-center overflow-hidden shadow-inner mb-2.5 sm:mb-3">
+                    <div class="absolute w-28 h-36 sm:w-32 sm:h-40 border-2 border-dashed border-[var(--gold-accent)]/80 rounded-[50%_50%_42%_42%] z-20 flex items-center justify-center pointer-events-none">
                         <span class="text-[9px] text-[var(--gold-accent)] font-bold tracking-wider bg-white/90 px-2 py-0.5 rounded border border-[var(--gold-accent)]/40 absolute bottom-3 shadow-sm">
                             <span class="lang-zh">請對齊舌體區域</span>
                             <span class="lang-en">Align Tongue Here</span>
@@ -264,7 +283,7 @@
                 </div>
 
                 <!-- 確定分析按鈕 -->
-                <button id="btn-confirm-analyze" onclick="confirmAndAnalyzeTongue()" class="hidden w-full py-3 rounded-xl bg-gradient-to-r from-emerald-700 to-teal-800 hover:from-emerald-800 hover:to-teal-900 text-white font-bold text-xs shadow-md active:scale-[0.98] transition-all mb-3 flex items-center justify-center gap-2 border border-emerald-600/30">
+                <button id="btn-confirm-analyze" onclick="confirmAndAnalyzeTongue()" class="hidden w-full py-3 rounded-xl bg-gradient-to-r from-emerald-700 to-teal-800 hover:from-emerald-800 hover:to-teal-900 text-white font-bold text-xs shadow-md active:scale-[0.98] transition-all mb-2.5 sm:mb-3 flex items-center justify-center gap-2 border border-emerald-600/30">
                     <i class="fa-solid fa-magnifying-glass font-bold"></i>
                     <span>
                         <span class="lang-zh">確定分析此舌照 (開始 AI 診斷)</span>
@@ -272,13 +291,13 @@
                     </span>
                 </button>
 
-                <div id="api-status-badge" class="hidden mb-3 p-2 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-[10px] text-center font-bold flex items-center justify-center gap-2">
+                <div id="api-status-badge" class="hidden mb-2.5 sm:mb-3 p-2 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-[10px] text-center font-bold flex items-center justify-center gap-2">
                     <i class="fa-solid fa-spinner animate-spin"></i>
                     <span id="api-status-text">正在將舌照發送至 Dify AI 進行視覺診斷...</span>
                 </div>
 
                 <!-- 標準化檢測項狀態面板 -->
-                <div class="grid grid-cols-3 gap-2 bg-white p-2.5 rounded-2xl border border-[var(--border-color)] shadow-sm mb-3 text-center">
+                <div class="grid grid-cols-3 gap-2 bg-white p-2.5 rounded-2xl border border-[var(--border-color)] shadow-sm mb-2.5 sm:mb-3 text-center">
                     <div>
                         <div id="chk-light" class="w-2.5 h-2.5 rounded-full bg-neutral-300 mx-auto mb-1"></div>
                         <span class="text-[10px] text-neutral-500 block">
@@ -320,7 +339,7 @@
                     </span>
                     <i class="fa-solid fa-chevron-right text-[10px]"></i>
                 </button>
-                <p class="text-[9px] text-neutral-500 leading-normal mt-2 text-center border-t border-neutral-200 pt-1.5">
+                <p class="text-[9px] text-neutral-500 leading-normal mt-1.5 text-center border-t border-neutral-200 pt-1">
                     <span class="lang-zh">* 聲明：本數據與報告僅作中醫科普與文旅養生建議參考，不具醫療診斷效力。</span>
                     <span class="lang-en">* Disclaimer: For wellness reference only, not a medical diagnosis.</span>
                 </p>
@@ -330,7 +349,7 @@
         <!-- ==========================================
              第三步：七情問卷調查 (Survey Screen)
              ========================================== -->
-        <div id="screen-survey" class="screen-transition absolute inset-0 p-6 flex flex-col justify-between z-0 translate-x-full bg-[var(--sage-light)]">
+        <div id="screen-survey" class="screen-transition absolute inset-0 p-5 sm:p-6 flex flex-col justify-between z-0 translate-x-full bg-[var(--sage-light)]">
             <!-- 頂部列 -->
             <div class="flex justify-between items-center pt-1 mb-2">
                 <span class="text-[10px] text-[var(--gold-accent)] font-bold bg-amber-50 border border-amber-600/20 px-2.5 py-1 rounded-full uppercase">
@@ -349,13 +368,13 @@
                     <span id="survey-progress-lbl" class="text-xs text-neutral-600 font-semibold">Q1 / 14</span>
                 </div>
 
-                <div class="w-full h-1.5 bg-[#cbd5c0]/40 rounded-full mb-4 overflow-hidden border border-[#cbd5c0]/10">
+                <div class="w-full h-1.5 bg-[#cbd5c0]/40 rounded-full mb-3 overflow-hidden border border-[#cbd5c0]/10">
                     <div id="survey-progress-bar" class="h-full w-0 bg-gradient-to-r from-emerald-600 to-teal-700 rounded-full transition-all duration-300 shadow-[0_0_10px_rgba(46,92,62,0.2)]"></div>
                 </div>
 
                 <div class="flex-1 overflow-y-auto pr-1">
-                    <div class="p-4 rounded-2xl bg-white border border-[var(--border-color)] shadow-sm mb-3">
-                        <p id="survey-question-text" class="text-sm font-bold text-emerald-950 leading-relaxed font-serif">載入題目中...</p>
+                    <div class="p-3.5 rounded-2xl bg-white border border-[var(--border-color)] shadow-sm mb-2.5">
+                        <p id="survey-question-text" class="text-xs sm:text-sm font-bold text-emerald-950 leading-relaxed font-serif">載入題目中...</p>
                     </div>
 
                     <div id="survey-options-container" class="flex flex-col gap-2">
@@ -364,12 +383,12 @@
                 </div>
             </div>
 
-            <div class="flex gap-2 mt-3 pt-3 border-t border-neutral-200">
-                <button id="btn-survey-back" onclick="handleSurveyBack()" class="flex-1 py-3 rounded-xl border border-[var(--border-color)] bg-white text-neutral-700 text-xs font-bold active:scale-[0.98] shadow-sm">
+            <div class="flex gap-2 mt-2 pt-2.5 border-t border-neutral-200">
+                <button id="btn-survey-back" onclick="handleSurveyBack()" class="flex-1 py-2.5 sm:py-3 rounded-xl border border-[var(--border-color)] bg-white text-neutral-700 text-xs font-bold active:scale-[0.98] shadow-sm">
                     <span class="lang-zh">返回上一步</span>
                     <span class="lang-en">Back</span>
                 </button>
-                <button id="btn-survey-next" disabled onclick="handleSurveyNext()" class="flex-[1.5] py-3 rounded-xl bg-emerald-700 text-white text-xs font-bold shadow-[0_4px_12px_rgba(46,92,62,0.15)] active:scale-[0.98]">
+                <button id="btn-survey-next" disabled onclick="handleSurveyNext()" class="flex-[1.5] py-2.5 sm:py-3 rounded-xl bg-emerald-700 text-white text-xs font-bold shadow-[0_4px_12px_rgba(46,92,62,0.15)] active:scale-[0.98]">
                     <span class="lang-zh">下一步</span>
                     <span class="lang-en">Next</span>
                 </button>
@@ -379,10 +398,10 @@
         <!-- ==========================================
              第四步：診斷結果與避邪調養路線 (Result Screen)
              ========================================== -->
-        <div id="screen-result" class="screen-transition absolute inset-0 p-5 flex flex-col justify-between z-0 translate-x-full bg-[var(--sage-light)]">
+        <div id="screen-result" class="screen-transition absolute inset-0 p-4 sm:p-5 flex flex-col justify-between z-0 translate-x-full bg-[var(--sage-light)]">
             <!-- 頂部列 -->
             <div class="flex justify-between items-center pt-1 mb-1">
-                <h2 class="text-base font-bold text-emerald-950 flex items-center gap-1.5 font-serif">
+                <h2 class="text-sm sm:text-base font-bold text-emerald-950 flex items-center gap-1.5 font-serif">
                     <span class="text-[var(--gold-accent)]">☯</span>
                     <span>
                         <span class="lang-zh">身心多元避邪調養處方</span>
@@ -398,36 +417,36 @@
             <div class="flex-1 overflow-y-auto pr-1">
                 
                 <!-- 診斷核心指標 -->
-                <div class="p-3.5 rounded-2xl bg-white border border-[var(--border-color)] shadow-sm mb-3">
-                    <span class="text-[10px] text-[var(--gold-accent)] font-bold tracking-wider block mb-2 font-serif">
+                <div class="p-3 rounded-2xl bg-white border border-[var(--border-color)] shadow-sm mb-2.5">
+                    <span class="text-[10px] text-[var(--gold-accent)] font-bold tracking-wider block mb-1.5 font-serif">
                         <span class="lang-zh">🔍 雙維度診斷結論</span>
                         <span class="lang-en">🔍 Dual-Dimension Diagnosis</span>
                     </span>
-                    <div class="grid grid-cols-2 gap-2 mb-3">
+                    <div class="grid grid-cols-2 gap-2 mb-2.5">
                         <div class="bg-emerald-50 border border-emerald-200/50 p-2 rounded-xl text-center">
                             <span class="text-[9px] text-neutral-600 block">
                                 <span class="lang-zh">客觀六淫邪氣</span>
                                 <span class="lang-en">Objective Six Evils</span>
                             </span>
-                            <strong id="diag-six-evils" class="text-sm text-emerald-800 font-bold font-serif mt-0.5 block">-</strong>
+                            <strong id="diag-six-evils" class="text-xs sm:text-sm text-emerald-800 font-bold font-serif mt-0.5 block">-</strong>
                         </div>
                         <div class="bg-amber-50/50 border border-amber-200/50 p-2 rounded-xl text-center">
                             <span class="text-[9px] text-neutral-600 block">
                                 <span class="lang-zh">主觀七情偏頗</span>
                                 <span class="lang-en">Emotion Bias</span>
                             </span>
-                            <strong id="diag-seven-emotions" class="text-xs text-[var(--gold-accent)] font-bold font-serif mt-0.5 block">-</strong>
+                            <strong id="diag-seven-emotions" class="text-[11px] sm:text-xs text-[var(--gold-accent)] font-bold font-serif mt-0.5 block">-</strong>
                         </div>
                     </div>
                     <p id="diag-desc-text" class="text-[11px] text-neutral-700 leading-relaxed"></p>
                 </div>
 
                 <!-- 舌診特徵細化 -->
-                <div class="p-3.5 rounded-2xl bg-white border border-[var(--border-color)] shadow-sm mb-3 flex gap-3 items-center">
-                    <div class="w-16 h-16 rounded-xl border border-[var(--border-color)] bg-[#edf1ed] overflow-hidden shrink-0">
+                <div class="p-3 rounded-2xl bg-white border border-[var(--border-color)] shadow-sm mb-2.5 flex gap-3 items-center">
+                    <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-xl border border-[var(--border-color)] bg-[#edf1ed] overflow-hidden shrink-0">
                         <img id="res-tongue-thumb" class="w-full h-full object-cover" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><rect width='100' height='100' fill='%23edf1ed'/></svg>" alt="舌象縮圖">
                     </div>
-                    <div class="flex-1 grid grid-cols-2 gap-x-3 gap-y-1 text-[10px] text-neutral-700">
+                    <div class="flex-1 grid grid-cols-2 gap-x-2 gap-y-1 text-[10px] text-neutral-700">
                         <div>
                             <span class="lang-zh">舌質顏色</span><span class="lang-en">Color</span>：<span id="res-tongue-color" class="font-bold text-emerald-800">淡紅</span>
                         </div>
@@ -444,7 +463,7 @@
                 </div>
 
                 <!-- 音頻康養聲療模組 -->
-                <div class="p-3.5 rounded-2xl bg-white border border-[var(--border-color)] shadow-sm mb-3">
+                <div class="p-3 rounded-2xl bg-white border border-[var(--border-color)] shadow-sm mb-2.5">
                     <span class="text-[10px] text-[var(--gold-accent)] font-bold tracking-wider block mb-1.5 font-serif">
                         <span class="lang-zh">🎵 五音情志調心療法 (五音調養)</span>
                         <span class="lang-en">🎵 Pentatonic Music Therapy</span>
@@ -454,19 +473,19 @@
                             <strong id="sound-title" class="text-xs text-emerald-950 block font-serif">角音 (F Frequency) - 疏肝理氣</strong>
                             <span id="sound-desc" class="text-[10px] text-neutral-600 block mt-0.5">對應木能量，適用於情志鬱結/焦躁</span>
                         </div>
-                        <button id="btn-play-sound" onclick="toggleHealingSound()" class="w-9 h-9 rounded-full bg-emerald-700 hover:bg-emerald-600 text-white flex items-center justify-center transition-all shadow-[0_4px_10px_rgba(46,92,62,0.15)]">
+                        <button id="btn-play-sound" onclick="toggleHealingSound()" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-emerald-700 hover:bg-emerald-600 text-white flex items-center justify-center transition-all shadow-[0_4px_10px_rgba(46,92,62,0.15)] shrink-0">
                             <i id="play-icon" class="fa-solid fa-play text-xs pl-0.5"></i>
                         </button>
                     </div>
                 </div>
 
                 <!-- 藥食同源與老鋪調理 -->
-                <div class="p-3.5 rounded-2xl bg-white border border-[var(--border-color)] shadow-sm mb-3">
+                <div class="p-3 rounded-2xl bg-white border border-[var(--border-color)] shadow-sm mb-2.5">
                     <span class="text-[10px] text-emerald-800 font-bold tracking-wider block mb-1 font-serif">
                         <span class="lang-zh">🍵 推薦藥食同源調理方案</span>
                         <span class="lang-en">🍵 Herbal Dietary Remedy</span>
                     </span>
-                    <strong id="tea-name" class="text-sm text-emerald-950 block font-serif">清熱五花茶</strong>
+                    <strong id="tea-name" class="text-xs sm:text-sm text-emerald-950 block font-serif">清熱五花茶</strong>
                     <p id="tea-desc" class="text-[11px] text-neutral-600 leading-relaxed mt-1 mb-2"></p>
                     <div class="bg-[#f0f4f1] border border-[#cbd5c0]/50 p-2 rounded-xl flex items-center justify-between text-[10px]">
                         <span class="text-neutral-700 font-medium">
@@ -478,7 +497,7 @@
                 </div>
 
                 <!-- 避邪調養地圖可視化 -->
-                <div class="p-3.5 rounded-2xl bg-white border border-[var(--border-color)] shadow-sm mb-3">
+                <div class="p-3 rounded-2xl bg-white border border-[var(--border-color)] shadow-sm mb-2.5">
                     <div class="flex items-center justify-between mb-2">
                         <span class="text-[10px] text-[var(--gold-accent)] font-bold tracking-wider font-serif">
                             <span class="lang-zh">🗺 避邪調養 CityWalk 地圖嚮導</span>
@@ -493,10 +512,10 @@
                         </button>
                     </div>
                     
-                    <div class="w-full bg-[#e8ede9] rounded-xl p-3 border border-[#cbd5c0]/50 flex flex-col items-center relative overflow-hidden shadow-inner">
+                    <div class="w-full bg-[#e8ede9] rounded-xl p-2.5 sm:p-3 border border-[#cbd5c0]/50 flex flex-col items-center relative overflow-hidden shadow-inner">
                         <div class="absolute inset-0 opacity-15 pointer-events-none bg-[radial-gradient(#3d70b2_1px,transparent_1px)] [background-size:10px_10px]"></div>
 
-                        <svg id="macau-map-svg" viewBox="0 0 240 380" class="w-full max-w-[175px] h-auto z-10 filter drop-shadow-sm">
+                        <svg id="macau-map-svg" viewBox="0 0 240 380" class="w-full max-w-[150px] sm:max-w-[175px] h-auto z-10 filter drop-shadow-sm">
                             <path d="M125,22 C138,18 148,28 144,42 C140,55 146,70 138,85 C132,95 120,98 112,90 C105,82 108,68 110,55 C112,42 115,30 125,22 Z" fill="#2e5c3e" opacity="0.9" stroke="#1b3a26" stroke-width="1.2" />
                             <path d="M125,78 L125,125" fill="none" stroke="#a37f55" stroke-width="2" stroke-dasharray="3,2" opacity="0.75"/>
                             <path d="M112,82 L105,130" fill="none" stroke="#a37f55" stroke-width="2" stroke-dasharray="3,2" opacity="0.75"/>
@@ -543,18 +562,18 @@
                 </div>
 
                 <!-- 詳細步行站點介紹 (Timeline) -->
-                <div class="p-3.5 rounded-2xl bg-white border border-[var(--border-color)] shadow-sm mb-3">
-                    <span class="text-[10px] text-[var(--gold-accent)] font-bold tracking-wider block mb-3 font-serif">
+                <div class="p-3 rounded-2xl bg-white border border-[var(--border-color)] shadow-sm mb-2.5">
+                    <span class="text-[10px] text-[var(--gold-accent)] font-bold tracking-wider block mb-2.5 font-serif">
                         <span class="lang-zh">🚶 定制街區站點調控</span>
                         <span class="lang-en">🚶 Customized Station Control</span>
                     </span>
-                    <div id="route-timeline-container" class="space-y-4 pl-3 relative border-l border-[var(--border-color)]">
+                    <div id="route-timeline-container" class="space-y-3 pl-3 relative border-l border-[var(--border-color)]">
                         <!-- JS動態生成 -->
                     </div>
                 </div>
 
-                <div class="p-3 rounded-xl bg-amber-50/50 border border-amber-200/60 text-[10px] text-amber-900/80 leading-relaxed mb-4">
-                    <span class="lang-zh">🚫 <strong>友善社區提示：</strong> 本路線穿行祐漢, 下環等民生住宅舊區，夜間 20:00 後部分站點諮詢關閉。請漫步者降低音量，保障社區居民安寧。</span>
+                <div class="p-2.5 rounded-xl bg-amber-50/50 border border-amber-200/60 text-[10px] text-amber-900/80 leading-relaxed mb-3">
+                    <span class="lang-zh">🚫 <strong>友善社區提示：</strong> 本路線穿行祐漢、下環等民生住宅舊區，夜間 20:00 後部分站點諮詢關閉。請漫步者降低音量，保障社區居民安寧。</span>
                     <span class="lang-en">🚫 <strong>Community Notice:</strong> This route passes through old residential areas. Please keep noise down after 20:00.</span>
                 </div>
 
@@ -578,33 +597,33 @@
 
     <!-- 全域 Modal -->
     <div id="global-modal" class="modal-overlay absolute inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 opacity-0 pointer-events-none transition-all duration-300">
-        <div class="modal-card w-[85%] max-w-sm bg-white border border-[var(--border-color)] rounded-3xl p-6 shadow-2xl flex flex-col items-center text-neutral-800">
+        <div class="modal-card w-[85%] max-w-sm bg-white border border-[var(--border-color)] rounded-3xl p-5 sm:p-6 shadow-2xl flex flex-col items-center text-neutral-800">
             <div id="modal-loading-block" class="hidden text-center py-4">
-                <span class="inline-block text-5xl text-emerald-700 animate-spin mb-4 font-serif">☯</span>
+                <span class="inline-block text-5xl text-emerald-700 animate-spin mb-3 font-serif">☯</span>
                 <h4 class="text-sm font-bold text-emerald-950 font-serif">
                     <span class="lang-zh">多模態 AI 融合分析中</span>
                     <span class="lang-en">Multi-modal AI Analysis</span>
                 </h4>
-                <p class="text-[11px] text-neutral-600 mt-2">
+                <p class="text-[11px] text-neutral-600 mt-1.5">
                     <span class="lang-zh">正在整合舌象特徵與 14 題心理生理指標...</span>
                     <span class="lang-en">Integrating tongue & 14 emotion indices...</span>
                 </p>
-                <div class="w-32 h-1 bg-neutral-100 rounded-full mx-auto mt-4 overflow-hidden border border-neutral-200">
+                <div class="w-32 h-1 bg-neutral-100 rounded-full mx-auto mt-3 overflow-hidden border border-neutral-200">
                     <div class="h-full bg-emerald-600 animate-[pulse_1.5s_infinite] rounded-full"></div>
                 </div>
             </div>
 
             <div id="modal-content-block" class="w-full">
-                <div class="flex items-center gap-2 mb-3">
-                    <div class="w-8 h-8 rounded-full bg-emerald-50 border border-emerald-600/20 flex items-center justify-center text-emerald-700 text-sm">
+                <div class="flex items-center gap-2 mb-2.5">
+                    <div class="w-7 h-7 rounded-full bg-emerald-50 border border-emerald-600/20 flex items-center justify-center text-emerald-700 text-xs">
                         <i class="fa-solid fa-circle-info"></i>
                     </div>
-                    <h3 id="modal-title" class="text-base font-bold text-emerald-950 font-serif">
+                    <h3 id="modal-title" class="text-sm sm:text-base font-bold text-emerald-950 font-serif">
                         <span class="lang-zh">系統提示</span>
                         <span class="lang-en">System Notice</span>
                     </h3>
                 </div>
-                <div id="modal-body" class="text-xs text-neutral-600 leading-relaxed mb-5 text-left max-h-60 overflow-y-auto"></div>
+                <div id="modal-body" class="text-xs text-neutral-600 leading-relaxed mb-4 text-left max-h-60 overflow-y-auto"></div>
                 <div id="modal-footer-btns" class="w-full">
                     <button onclick="closeModal()" class="w-full py-2.5 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition-all">
                         <span class="lang-zh">我知道了</span>
@@ -731,7 +750,7 @@
             document.getElementById('btn-confirm-analyze').classList.remove('hidden');
             const nextBtn = document.getElementById('btn-to-survey');
             nextBtn.disabled = true;
-            nextBtn.className = "w-full py-3.5 rounded-xl bg-neutral-200 text-neutral-400 border border-neutral-300 font-bold text-sm flex items-center justify-center gap-1 transition-all active:scale-[0.98]";
+            nextBtn.className = "w-full py-3.5 rounded-xl bg-neutral-200 text-neutral-400 border border-neutral-300 font-bold text-xs flex items-center justify-center gap-1 transition-all active:scale-[0.98]";
         }, 'image/jpeg', 0.92);
     }
 
@@ -756,7 +775,7 @@
 
             const nextBtn = document.getElementById('btn-to-survey');
             nextBtn.disabled = true;
-            nextBtn.className = "w-full py-3.5 rounded-xl bg-neutral-200 text-neutral-400 border border-neutral-300 font-bold text-sm flex items-center justify-center gap-1 transition-all active:scale-[0.98]";
+            nextBtn.className = "w-full py-3.5 rounded-xl bg-neutral-200 text-neutral-400 border border-neutral-300 font-bold text-xs flex items-center justify-center gap-1 transition-all active:scale-[0.98]";
         };
         reader.readAsDataURL(file);
     }
@@ -782,37 +801,32 @@
 
         if (cleanStat) {
             statusTxt.innerText = currentLang === 'zh' ? `Dify AI 分析完成: ${cleanStat}` : `AI Analysis Complete: ${cleanStat}`;
-            badge.className = "mb-3 p-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-[10px] text-center font-bold flex items-center justify-center gap-2";
+            badge.className = "mb-2.5 sm:mb-3 p-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-[10px] text-center font-bold flex items-center justify-center gap-2";
             applyApiResultToProfile(cleanStat);
         } else {
             statusTxt.innerText = currentLang === 'zh' ? "已採用靈敏備用演算法推導體質" : "Fallback algorithm activated";
-            badge.className = "mb-3 p-2 rounded-xl bg-neutral-100 border border-neutral-300 text-neutral-600 text-[10px] text-center font-bold flex items-center justify-center gap-2";
+            badge.className = "mb-2.5 sm:mb-3 p-2 rounded-xl bg-neutral-100 border border-neutral-300 text-neutral-600 text-[10px] text-center font-bold flex items-center justify-center gap-2";
             applyApiResultToProfile("健康淡紅");
         }
     }
 
-    // 專門解析 Dify 回傳結果（自動提取 JSON 內的 value）
+    // 解析 Dify 回傳結果（提取 JSON value）
     function extractJsonValue(rawText) {
         if (!rawText) return null;
         let text = String(rawText).trim();
-        
-        // 如果包含 markdown json 標籤，先清理
         text = text.replace(/```json/gi, '').replace(/```/g, '').trim();
 
         try {
             const parsed = JSON.parse(text);
             if (typeof parsed === 'object' && parsed !== null) {
-                // 優先找常用的幾個 key
                 const keys = ['toug_stat', 'roug_stat', 'result', 'status', 'diagnosis'];
                 for (let k of keys) {
                     if (parsed[k]) return String(parsed[k]).trim();
                 }
-                // 若找不到特定 key，抓取第一個 value
                 const values = Object.values(parsed);
                 if (values.length > 0) return String(values[0]).trim();
             }
         } catch (e) {
-            // 如果不是純 JSON，嘗試用正則表達式提取雙引號內的內容
             const match = text.match(/"(?:toug_stat|roug_stat|result|status)"\s*:\s*"([^"]+)"/i);
             if (match && match[1]) {
                 return match[1].trim();
@@ -969,13 +983,13 @@
     };
 
     const EMOTION_TEXT_MAP = {
-        "喜": { zh: "心神過旺 (心氣亢奮)", en: "Overjoyed (Heart Qi Excitement)" },
-        "怒": { zh: "情志抑鬱 (怒傷肝)", en: "Frustration (Anger Hurts Liver)" },
-        "悲": { zh: "悲憂善感 (悲傷心肺)", en: "Melancholy (Sorrow Affects Lungs)" },
-        "思": { zh: "思慮過度 (思傷脾)", en: "Overthinking (Contemplation Hurts Spleen)" },
-        "憂": { zh: "憂思焦慮 (憂傷肺脾)", en: "Anxiety & Worry (Worry Hurts Lung/Spleen)" },
-        "驚": { zh: "心神不寧 (驚則氣亂)", en: "Restless Mind (Fright Disorients Qi)" },
-        "恐": { zh: "驚恐不安 (恐傷腎)", en: "Fear & Insecurity (Fear Hurts Kidneys)" }
+        "喜": { zh: "心神過旺 / 喜樂過度 (心氣亢奮)", en: "Overjoyed / Excessive Joy (Heart Qi Excitement)" },
+        "怒": { zh: "情志抑鬱 / 肝氣鬱結 (怒傷肝)", en: "Frustration / Liver Qi Stagnation (Anger Hurts Liver)" },
+        "悲": { zh: "悲憂善感 / 肺氣虛損 (悲傷心肺)", en: "Melancholy / Lung Qi Deficiency (Sorrow Affects Lungs)" },
+        "思": { zh: "思慮過度 / 脾失健運 (思傷脾)", en: "Overthinking / Spleen Dysfunction (Contemplation Hurts Spleen)" },
+        "憂": { zh: "憂思焦慮 / 氣機鬱滯 (憂傷肺脾)", en: "Anxiety & Worry / Qi Stagnation (Worry Hurts Lung/Spleen)" },
+        "驚": { zh: "心神不寧 / 膽氣虛怯 (驚則氣亂)", en: "Restless Mind / Gallbladder Timidity (Fright Disorients Qi)" },
+        "恐": { zh: "驚恐不安 / 腎精虧損 (恐傷腎)", en: "Fear & Insecurity / Kidney Essence Loss (Fear Hurts Kidneys)" }
     };
 
     const LOCATIONS_DB = {
@@ -1729,7 +1743,7 @@
             currentOscillators = [];
             isPlayingAudio = false;
             icon.className = "fa-solid fa-play text-xs pl-0.5";
-            document.getElementById('btn-play-sound').className = "w-9 h-9 rounded-full bg-emerald-700 text-white flex items-center justify-center transition-all shadow-[0_4px_10px_rgba(46,92,62,0.15)]";
+            document.getElementById('btn-play-sound').className = "w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-emerald-700 text-white flex items-center justify-center transition-all shadow-[0_4px_10px_rgba(46,92,62,0.15)] shrink-0";
         } else {
             try {
                 if (!currentAudioContext) {
@@ -1756,7 +1770,7 @@
 
                 isPlayingAudio = true;
                 icon.className = "fa-solid fa-pause text-xs";
-                document.getElementById('btn-play-sound').className = "w-9 h-9 rounded-full bg-rose-600 text-white flex items-center justify-center transition-all shadow-[0_4px_10px_rgba(244,63,94,0.15)]";
+                document.getElementById('btn-play-sound').className = "w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-rose-600 text-white flex items-center justify-center transition-all shadow-[0_4px_10px_rgba(244,63,94,0.15)] shrink-0";
 
             } catch (err) {
                 console.error("聲療模組初始化失敗：", err);
@@ -1839,7 +1853,7 @@
         document.getElementById('api-status-badge').classList.add('hidden');
 
         document.querySelectorAll('.preset-btn').forEach(btn => {
-            btn.className = "preset-btn py-1 px-1.5 rounded-lg border border-[var(--border-color)] bg-white text-[10px] text-neutral-700 hover:border-emerald-600/45 transition-all font-semibold shadow-sm";
+            btn.className = "preset-btn py-1.5 px-1 rounded-lg border border-[var(--border-color)] bg-white text-[10px] text-neutral-700 hover:border-emerald-600/45 transition-all font-semibold shadow-sm text-center";
         });
 
         ["chk-light", "chk-shadow", "chk-posture"].forEach(id => {
