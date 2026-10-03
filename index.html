@@ -661,8 +661,8 @@
     }
 
     let currentProfileData = null;
-    let currentDominantEmotion = "憂";
-    let currentMaxScore = 4;
+    let currentDominantEmotion = "NA";
+    let currentMaxScore = 0;
     let cameraStream = null;
     let pendingTongueFile = null;
     let pendingTongueBase64 = "";
@@ -983,7 +983,8 @@
         "思": { zh: "思慮過度 / 脾失健運 (思傷脾)", en: "Overthinking / Spleen Dysfunction (Contemplation Hurts Spleen)" },
         "憂": { zh: "憂思焦慮 / 氣機鬱滯 (憂傷肺脾)", en: "Anxiety & Worry / Qi Stagnation (Worry Hurts Lung/Spleen)" },
         "驚": { zh: "心神不寧 / 膽氣虛怯 (驚則氣亂)", en: "Restless Mind / Gallbladder Timidity (Fright Disorients Qi)" },
-        "恐": { zh: "驚恐不安 / 腎精虧損 (恐傷腎)", en: "Fear & Insecurity / Kidney Essence Loss (Fear Hurts Kidneys)" }
+        "恐": { zh: "驚恐不安 / 腎精虧損 (恐傷腎)", en: "Fear & Insecurity / Kidney Essence Loss (Fear Hurts Kidneys)" },
+        "NA": { zh: "不適用 / 舌象客觀主導", en: "N/A / Objective Tongue Dominated" }
     };
 
     const LOCATIONS_DB = {
@@ -1002,7 +1003,6 @@
             if (!osmMapInstance) {
                 osmMapInstance = L.map('osm-map', { zoomControl: false }).setView([22.190, 113.545], 13);
                 
-                // 帶入您的專屬 CARTO API Key 參數，消除浮水印
                 L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png?key=cb1_488t_1_dc484596a4ccd9423009c6a2', {
                     maxZoom: 19,
                     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
@@ -1041,6 +1041,27 @@
         }, 300);
 
         document.getElementById('route-desc-badge').innerText = currentLang === 'zh' ? `已為您自動匹配專屬路線（共 ${nodeKeys.length} 站）` : `Exclusive route matched (${nodeKeys.length} stations)`;
+    }
+
+    function renderRouteTimeline(nodeKeys) {
+        const container = document.getElementById('route-timeline-container');
+        if (!container) return;
+        container.innerHTML = '';
+
+        nodeKeys.forEach((key, index) => {
+            const loc = LOCATIONS_DB[key];
+            if (!loc) return;
+
+            const item = document.createElement('div');
+            item.className = "relative pl-5 pb-3 last:pb-0";
+            item.innerHTML = `
+                <div class="absolute -left-[5px] top-1 w-2.5 h-2.5 rounded-full bg-[var(--gold-accent)] border-2 border-white shadow-sm"></div>
+                <span class="text-[9px] font-bold text-[var(--gold-accent)] uppercase tracking-wider block">Station 0${index + 1}</span>
+                <h4 class="text-xs font-bold text-emerald-950 font-serif mt-0.5">${loc.title[currentLang] || loc.title.zh}</h4>
+                <p class="text-[10px] text-neutral-600 leading-relaxed mt-0.5">${loc.desc[currentLang] || loc.desc.zh}</p>
+            `;
+            container.appendChild(item);
+        });
     }
 
     function openMapSelectorModal() {
@@ -1583,11 +1604,12 @@
         const container = document.getElementById('survey-options-container');
         container.innerHTML = '';
 
+        // 1. 渲染正常選項 (A~G)
         qData.options.forEach((opt) => {
             const item = document.createElement('div');
             const isSelected = surveyAnswers[currentQuestionIndex] === opt.val;
             
-            item.className = `p-3 rounded-xl border text-xs cursor-pointer flex items-center gap-2.5 transition-all ${
+            item.className = `p-2.5 rounded-xl border text-xs cursor-pointer flex items-center gap-2.5 transition-all ${
                 isSelected 
                 ? 'border-emerald-600 bg-emerald-50 text-emerald-900 font-bold shadow-sm' 
                 : 'border-[#cbd5c0] bg-white text-neutral-700 hover:border-emerald-600/50 hover:bg-emerald-50/20'
@@ -1606,6 +1628,25 @@
 
             container.appendChild(item);
         });
+
+        // 2. 渲染「不適用 (略過此題)」選項
+        const naItem = document.createElement('div');
+        const isNaSelected = surveyAnswers[currentQuestionIndex] === 'NA';
+        naItem.className = `p-2.5 rounded-xl border text-xs cursor-pointer flex items-center gap-2.5 transition-all ${
+            isNaSelected 
+            ? 'border-amber-600 bg-amber-50 text-amber-900 font-bold shadow-sm' 
+            : 'border-dashed border-neutral-300 bg-neutral-50/50 text-neutral-500 hover:border-amber-600/50 hover:bg-amber-50/20'
+        }`;
+        naItem.innerHTML = `
+            <span class="w-5 h-5 rounded-lg bg-neutral-200 flex items-center justify-center border border-neutral-300 shrink-0 text-[10px] text-neutral-600 font-bold select-none">-</span>
+            <span class="leading-relaxed">${currentLang === 'zh' ? '不適用 (略過此題)' : 'N/A (Skip this question)'}</span>
+        `;
+        naItem.onclick = () => {
+            surveyAnswers[currentQuestionIndex] = 'NA';
+            document.getElementById('btn-survey-next').disabled = false;
+            renderSurveyQuestion();
+        };
+        container.appendChild(naItem);
 
         document.getElementById('btn-survey-back').disabled = currentQuestionIndex === 0;
         document.getElementById('btn-survey-next').disabled = !surveyAnswers[currentQuestionIndex];
@@ -1635,19 +1676,32 @@
         let emotionalScores = { "喜": 0, "怒": 0, "悲": 0, "思": 0, "憂": 0, "驚": 0, "恐": 0 };
         const emotionMappingTable = { "A": "喜", "B": "怒", "C": "悲", "D": "思", "E": "憂", "F": "驚", "G": "恐" };
 
+        let totalAnsweredCount = 0;
         for (let idx in surveyAnswers) {
             const choice = surveyAnswers[idx];
-            const emo = emotionMappingTable[choice];
-            if (emo) emotionalScores[emo]++;
+            if (choice && choice !== 'NA') {
+                totalAnsweredCount++;
+                const emo = emotionMappingTable[choice];
+                if (emo) emotionalScores[emo]++;
+            }
         }
 
-        let dominantEmotion = "憂";
+        let dominantEmotion = "NA";
         let maxScore = 0;
-        for (let emo in emotionalScores) {
-            if (emotionalScores[emo] > maxScore) {
-                maxScore = emotionalScores[emo];
-                dominantEmotion = emo;
+
+        if (totalAnsweredCount > 0) {
+            for (let emo in emotionalScores) {
+                if (emotionalScores[emo] > maxScore) {
+                    maxScore = emotionalScores[emo];
+                    dominantEmotion = emo;
+                }
             }
+            if (maxScore === 0) {
+                dominantEmotion = "NA";
+            }
+        } else {
+            dominantEmotion = "NA";
+            maxScore = 0;
         }
 
         currentDominantEmotion = dominantEmotion;
@@ -1668,8 +1722,11 @@
 
         document.getElementById('diag-six-evils').innerText = data.evil;
         
-        const emotionObj = EMOTION_TEXT_MAP[dominantEmotion] || EMOTION_TEXT_MAP["憂"];
-        const emotionTextFull = (emotionObj[currentLang] || emotionObj.zh) + ` (${maxScore} pt)`;
+        const emotionObj = EMOTION_TEXT_MAP[dominantEmotion] || EMOTION_TEXT_MAP["NA"];
+        const emotionTextFull = dominantEmotion === "NA" 
+            ? (currentLang === 'zh' ? "不適用 (舌象客觀主導)" : "N/A (Tongue Dominated)")
+            : (emotionObj[currentLang] || emotionObj.zh) + ` (${maxScore} pt)`;
+            
         document.getElementById('diag-seven-emotions').innerText = emotionTextFull;
 
         document.getElementById('diag-desc-text').innerText = data.description;
@@ -1691,27 +1748,6 @@
         renderRouteTimeline(data.nodes);
     }
 
-    function renderRouteTimeline(nodeKeys) {
-        const container = document.getElementById('route-timeline-container');
-        container.innerHTML = '';
-
-        nodeKeys.forEach((key, idx) => {
-            const loc = LOCATIONS_DB[key];
-            if (!loc) return;
-
-            const card = document.createElement('div');
-            card.className = "relative pl-5 pb-1.5 transition-all hover:translate-x-1";
-            
-            card.innerHTML = `
-                <div class="absolute -left-5 top-0 w-3.5 h-3.5 rounded-full bg-white border-2 border-emerald-600 flex items-center justify-center text-[7px] text-emerald-700 font-bold">${idx + 1}</div>
-                <h4 class="text-xs font-bold text-emerald-950 font-serif">${loc.title[currentLang] || loc.title.zh}</h4>
-                <p class="text-[10px] text-neutral-600 mt-0.5 leading-relaxed">${loc.desc[currentLang] || loc.desc.zh}</p>
-            `;
-
-            container.appendChild(card);
-        });
-    }
-
     function setupPentatonicAcoustics(dominantEmotion) {
         const soundTitle = document.getElementById('sound-title');
         
@@ -1722,10 +1758,11 @@
             "思": { name: { zh: "宮音 (Gong Harmony) - 健脾和中", en: "Gong Harmony - Strengthening Spleen" }, freq: 261.6, text: { zh: "土能量，安神健脾胃", en: "Earth energy, calms rumination" } },
             "憂": { name: { zh: "商音 (Shang Harmony) - 和營安神", en: "Shang Harmony - Calming Mind" }, freq: 440, text: { zh: "金能量，舒緩憂慮情緒", en: "Metal energy, eases anxiety" } },
             "驚": { name: { zh: "羽音 (Yu Harmony) - 平驚定志", en: "Yu Harmony - Stabilizing Will" }, freq: 293.7, text: { zh: "水能量，平定驚恐不安", en: "Water energy, stabilizes panic" } },
-            "恐": { name: { zh: "羽音 (Yu Harmony) - 溫補腎水", en: "Yu Harmony - Warming Kidneys" }, freq: 293.7, text: { zh: "水能量，溫補腎氣定恐懼", en: "Water energy, warms kidney water" } }
+            "恐": { name: { zh: "羽音 (Yu Harmony) - 溫補腎水", en: "Yu Harmony - Warming Kidneys" }, freq: 293.7, text: { zh: "水能量，溫補腎氣定恐懼", en: "Water energy, warms kidney water" } },
+            "NA": { name: { zh: "宮音 (Gong Harmony) - 協和五音 (舌象主導)", en: "Gong Harmony - Harmonizing Five Tones" }, freq: 261.6, text: { zh: "平衡頻率，依據客觀舌象進行五音調理", en: "Balanced frequency for tongue-guided wellness" } }
         };
 
-        const config = pentatonicConfig[dominantEmotion] || pentatonicConfig["思"];
+        const config = pentatonicConfig[dominantEmotion] || pentatonicConfig["NA"];
         soundTitle.innerText = config.name[currentLang] || config.name.zh;
         soundTitle.nextElementSibling.innerText = config.text[currentLang] || config.text.zh;
         soundTitle.dataset.freq = config.freq;
