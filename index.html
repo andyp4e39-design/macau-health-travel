@@ -109,10 +109,22 @@
             <div class="flex justify-between items-center pt-1 shrink-0">
                 <!-- 長者友善字體大小切換器 -->
                 <div class="flex items-center gap-1 bg-white border border-[var(--border-color)] rounded-full p-0.5 shadow-sm">
-                    <button onclick="setFontSize('sm')" class="font-size-btn px-2.5 py-1 rounded-full text-xs font-bold text-neutral-600 transition-all" data-size="sm">小</button>
-                    <button onclick="setFontSize('md')" class="font-size-btn px-2.5 py-1 rounded-full text-xs font-bold text-neutral-600 transition-all bg-emerald-700 text-white shadow-sm" data-size="md">中</button>
-                    <button onclick="setFontSize('lg')" class="font-size-btn px-2.5 py-1 rounded-full text-xs font-bold text-neutral-600 transition-all" data-size="lg">大</button>
-                    <button onclick="setFontSize('xl')" class="font-size-btn px-2.5 py-1 rounded-full text-xs font-bold text-neutral-600 transition-all" data-size="xl">特大</button>
+                    <button onclick="setFontSize('sm')" class="font-size-btn px-2.5 py-1 rounded-full text-xs font-bold text-neutral-600 transition-all" data-size="sm">
+						<span class="lang-zh">小</span>
+                        <span class="lang-en">Small</span>
+					</button>
+                    <button onclick="setFontSize('md')" class="font-size-btn px-2.5 py-1 rounded-full text-xs font-bold text-neutral-600 transition-all bg-emerald-700 text-white shadow-sm" data-size="md">
+						<span class="lang-zh">中</span>
+                        <span class="lang-en">Medium</span>
+					</button>
+                    <button onclick="setFontSize('lg')" class="font-size-btn px-2.5 py-1 rounded-full text-xs font-bold text-neutral-600 transition-all" data-size="lg">
+						<span class="lang-zh">大</span>
+                        <span class="lang-en">large</span>
+					</button>
+                    <button onclick="setFontSize('xl')" class="font-size-btn px-2.5 py-1 rounded-full text-xs font-bold text-neutral-600 transition-all" data-size="xl">
+						<span class="lang-zh">特大</span>
+                        <span class="lang-en">Very Large</span>
+					</button>
                 </div>
 
                 <button onclick="toggleLanguage()" class="px-3.5 py-1.5 rounded-full bg-white border border-[var(--border-color)] text-xs font-bold text-emerald-800 shadow-sm hover:bg-emerald-50 transition-all flex items-center gap-1.5 active:scale-95">
@@ -127,14 +139,17 @@
                     <div class="absolute inset-0 bg-gradient-to-tr from-emerald-600/5 to-transparent"></div>
                 </div>
                 
-                <h1 class="text-3xl sm:text-4xl font-extrabold tracking-widest font-serif gradient-text mb-1">舌苔walk</h1>
+                <h1 class="text-3xl sm:text-4xl font-extrabold tracking-widest font-serif gradient-text mb-1">
+					<span class="lang-zh">舌苔walk</span>
+                    <span class="lang-en">Tongue Diagnosis Application</span>
+				</h1>
                 <p class="text-xs sm:text-sm tracking-[0.25em] text-emerald-800/80 font-bold uppercase mb-3">Macau City Walk</p>
                 
                 <div class="h-[1px] w-1/3 bg-gradient-to-r from-transparent via-emerald-600/30 to-transparent mb-3"></div>
                 
                 <p class="text-xs sm:text-sm text-neutral-700 max-w-sm leading-relaxed">
-                    <span class="lang-zh">第六屆澳門聯校科學展覽參賽作品<br><span class="text-emerald-800 font-semibold">AI 舌診 · 七情雙維度辨證系統</span></span>
-                    <span class="lang-en">6th Macau Joint School Science Exhibition Entry<br><span class="text-emerald-800 font-semibold">AI Tongue Diagnosis & Emotion System</span></span>
+                    <span class="lang-zh">SHINE LIKE STARS 參賽作品<br><span class="text-emerald-800 font-semibold">AI 舌診 · 七情雙維度辨證系統</span></span>
+                    <span class="lang-en">SHINE LIKE STARS Science Exhibition Entry<br><span class="text-emerald-800 font-semibold">AI Tongue Diagnosis & Emotion System</span></span>
                 </p>
 
                 <div class="grid grid-cols-2 gap-2 w-full max-w-md mt-4">
@@ -183,8 +198,8 @@
                     <i class="fa-solid fa-arrow-right text-xs"></i>
                 </button>
                 <span class="text-[10px] text-neutral-500 text-center block">
-                    <span class="lang-zh">© 2026 澳門聯校科展「澳康遊」研發小組</span>
-                    <span class="lang-en">© 2026 Macau Joint School Science Exhibition</span>
+                    <span class="lang-zh">© 2026 聖保祿 舌苔walk 研發小組</span>
+                    <span class="lang-en">© 2026 Saint Paul School Tongue Diagnosis Application Team</span>
                 </span>
             </div>
         </div>
@@ -442,6 +457,11 @@
             </div>
 
             <div class="flex-1 max-w-lg mx-auto w-full my-2">
+				
+				<div class="p-2.5 rounded-xl bg-amber-50/50 border border-amber-200/60 text-[10px] text-amber-900/80 leading-relaxed mb-3">
+                    <span class="lang-zh">🚫 <strong>溫馨提示：</strong> <br> 本報告僅作中醫科普與文旅養生建議參考，不具醫療診斷效力。<br>如身體出現任何不適，請立即前往就醫或致電999報警求助。</span>
+                    <span class="lang-en">🚫 <strong>Friendly Reminder:</strong> <br> This report is intended strictly for Chinese medicine education and wellness tourism reference, and does not constitute medical advice or diagnosis. <br> If you exeperience any discomfort, please seek immediate medical attention or call 999 for emergency assistance.</span>
+                </div>
                 
                 <!-- 診斷核心指標 -->
                 <div class="p-3 rounded-2xl bg-white border border-[var(--border-color)] shadow-sm mb-2.5">
@@ -1526,7 +1546,7 @@
         document.getElementById('api-status-badge').classList.add('hidden');
 
         currentProfileData = presetKey;
-        const data = HEALTH_PRESETS_MAP[presetKey].zh;
+        const data = HEALTH_PRESETS_MAP[presetKey].en;
         
         document.querySelectorAll('.preset-btn').forEach(btn => {
             if (btn.getAttribute('data-preset') === presetKey) {
